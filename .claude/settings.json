@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch",
+      "Edit(context/**)",
+      "Write(context/**)",
+      "Edit(papers/**)",
+      "Write(papers/**)",
+      "Edit(workspace/**)",
+      "Write(workspace/**)",
+      "Write(logs/**)",
+      "Bash(pwsh -File harness/tools/Search-Papers.ps1:*)",
+      "Bash(powershell -File harness/tools/Search-Papers.ps1:*)",
+      "Bash(pwsh -NoProfile -File harness/tools/Search-Papers.ps1:*)",
+      "Bash(powershell -NoProfile -File harness/tools/Search-Papers.ps1:*)"
+    ],
+    "deny": [
+      "Bash(git reset --hard:*)",
+      "Bash(git push --force:*)",
+      "Bash(rm -rf:*)",
+      "Bash(Remove-Item -Recurse:*)"
+    ]
+  }
+}
