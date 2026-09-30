@@ -17,3 +17,9 @@
 - 한계: 컨테이너 네트워크 정책으로 학술 사이트 차단 → **전 논문 본문 확인 불가(초록 수준)**, 서지 일부 (확인 필요); 검색 예산 소진으로 일부 검색 미실행
 - 핵심 발견: 3L-NPC CM 저널은 2024–2026 4편(M1–M4)뿐이며 주입형 우세, M3 만 무주입 고유 성분; 스위치 전류 스펙트럼·자연 NP 전류 스펙트럼·출력 짝수 고조파를 노화 feature 로 쓴 저널 없음; NPC×ML/CNN 없음
 - 다음: (1) 네트워크 허용 후 M3, M1, M2, P26, M5, D3, D2, P20 정독 (2) MATLAB 민감도 실험(C1/C2/ESR vs 부하/변조 스윕, iSa2·ia·iNP·vNP 고조파) (3) Search-Papers.ps1 로 서지 (확인 필요) 채우기
+
+## 2026-09-30 — train80.py 운전조건 3D 분포도 수정
+- 요청: Train/Unseen 운전조건 3D projection 그림의 축 화살표 방향 수정 + 조건 위치 구분되게 펼치기
+- Skill: (없음, matplotlib 작도)
+- 결과: `workspace/results/plot_operating_conditions_3d.py` → `3d_projection.png`. 축은 nominal(60 Hz/8 kHz/100 V)에서 교차, 증가 방향 끝에만 화살표; half-axis |x|^0.6 스케일로 중심부 확장(SPREAD_GAMMA=1.0 이면 선형); 동일 좌표(R 10/22/47 Ω) 점은 부채꼴로 분리 + 리더선; 점 ID ↔ 우측 조건표
+- 한계: 원래 plot 코드는 받지 못해 train80.py 조건 목록으로 재작성. 1조건 파일은 코드에 R 값이 없어 R1=47, R4=10, 나머지=22 Ω 로 가정 (사용자 설명·기존 그림 기준)
