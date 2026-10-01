@@ -26,6 +26,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch
+from matplotlib.transforms import ScaledTranslation
 from mpl_toolkits.mplot3d import proj3d
 
 # ----------------------------------------------------------------------------
@@ -34,9 +35,13 @@ from mpl_toolkits.mplot3d import proj3d
 OUT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(OUT_DIR, "3d_projection.png")                # ID labels + table
 OUT_PATH_CLEAN = os.path.join(OUT_DIR, "3d_projection_clean.png")    # no ID labels, no table
+OUT_PATH_FAN = os.path.join(OUT_DIR, "3d_projection_fan.png")        # nominal points spread apart
+OUT_PATH_FAN_CLEAN = os.path.join(OUT_DIR, "3d_projection_fan_clean.png")
 SPREAD_GAMMA = 0.6          # 1.0 = linear, < 1 spreads points near nominal
 VIEW_ELEV, VIEW_AZIM = 22, -146   # viewed from the f0 = 30 Hz / fsw = 2 kHz quadrant
 STACK_SIZES = (1900, 560, 150)    # marker sizes for points sharing one position (back -> front)
+FAN_ANGLES_DEG = (232, 245, 258)  # fan mode: screen directions (deg, 0 = right, CCW) for shared points
+FAN_RADIUS_PT = 130               # fan mode: distance from the true point [points]
 STACK_LABEL_OFFSET = np.array([0.0, 0.30, 0.50])    # label placed in empty space + leader line
 LABEL_SIDE = {20: "right", 3: "left"}                   # per-ID label position override: "left"/"right" (default: above)
 
@@ -113,7 +118,7 @@ class Arrow3D(FancyArrowPatch):
         return np.min(zs)
 
 
-def plot(out_path, show_ids=True, show_table=True):
+def plot(out_path, show_ids=True, show_table=True, fan_shared=False):
     plt.rcParams.update({"font.size": 10})
     if show_table:
         fig = plt.figure(figsize=(16, 10), dpi=150)
@@ -184,11 +189,35 @@ def plot(out_path, show_ids=True, show_table=True):
 
         if len(members) > 1:
             members = sorted(members, key=lambda m: -R_SIZE[m[1][4]])
-            # same position: stack at the true point, largest behind -> smallest in front
-            for k, (idx, (split, _, _, _, r, _, _)) in enumerate(members):
-                ax.scatter(*base, s=STACK_SIZES[k], marker=R_MARKER[r], color=SPLIT_COLOR[split],
-                           edgecolor="k", linewidth=1.2, depthshade=False, zorder=6 + k)
-            ids = ", ".join(str(idx) for idx, _ in members) if show_ids else ""
+            if fan_shared:
+                # spread in screen space around the true point, each tied back by a leader line
+                x2, y2, _ = proj3d.proj_transform(*base, ax.get_proj())
+                ax.scatter(*base, s=22, color="k", depthshade=False, zorder=9)
+                for k, (idx, (split, _, _, _, r, _, _)) in enumerate(members):
+                    ang = np.deg2rad(FAN_ANGLES_DEG[k])
+                    off = FAN_RADIUS_PT * np.array([np.cos(ang), np.sin(ang)])
+                    ax.annotate("", (x2, y2), xytext=tuple(off), textcoords="offset points",
+                                arrowprops=dict(arrowstyle="-", color="0.3", lw=0.8,
+                                                shrinkA=0, shrinkB=2), zorder=8)
+                    ms = np.sqrt(R_SIZE[r])
+                    mk = Line2D([x2], [y2], marker=R_MARKER[r], markersize=ms, ls="",
+                                markerfacecolor=SPLIT_COLOR[split], markeredgecolor="k",
+                                markeredgewidth=1.0, zorder=9,
+                                transform=ax.transData + ScaledTranslation(
+                                    off[0] / 72, off[1] / 72, fig.dpi_scale_trans))
+                    ax.add_artist(mk)
+                    if show_ids:
+                        loff = (FAN_RADIUS_PT + 17) * np.array([np.cos(ang), np.sin(ang)])
+                        ax.annotate(str(idx), (x2, y2), xytext=tuple(loff), textcoords="offset points",
+                                    fontsize=8.5, fontweight="bold", ha="center", va="center",
+                                    zorder=11, bbox=dict(boxstyle="round,pad=0.12", fc="white",
+                                                         ec="none", alpha=0.75))
+            else:
+                # same position: stack at the true point, largest behind -> smallest in front
+                for k, (idx, (split, _, _, _, r, _, _)) in enumerate(members):
+                    ax.scatter(*base, s=STACK_SIZES[k], marker=R_MARKER[r], color=SPLIT_COLOR[split],
+                               edgecolor="k", linewidth=1.2, depthshade=False, zorder=6 + k)
+            ids = ", ".join(str(idx) for idx, _ in members) if show_ids and not fan_shared else ""
             if not base.any():
                 ids = (ids + "\n(nominal 60 Hz / 8 kHz / 100 V)" if ids
                        else "nominal 60 Hz / 8 kHz / 100 V")
@@ -276,6 +305,8 @@ def draw_condition_table(fig):
 def main():
     plot(OUT_PATH, show_ids=True, show_table=True)
     plot(OUT_PATH_CLEAN, show_ids=False, show_table=False)
+    plot(OUT_PATH_FAN, show_ids=True, show_table=True, fan_shared=True)
+    plot(OUT_PATH_FAN_CLEAN, show_ids=False, show_table=False, fan_shared=True)
 
 
 if __name__ == "__main__":
