@@ -40,8 +40,8 @@ OUT_PATH_FAN_CLEAN = os.path.join(OUT_DIR, "3d_projection_fan_clean.png")
 SPREAD_GAMMA = 0.6          # 1.0 = linear, < 1 spreads points near nominal
 VIEW_ELEV, VIEW_AZIM = 22, -146   # viewed from the f0 = 30 Hz / fsw = 2 kHz quadrant
 STACK_SIZES = (1900, 560, 150)    # marker sizes for points sharing one position (back -> front)
-FAN_ANGLES_DEG = (232, 245, 258)  # fan mode: screen directions (deg, 0 = right, CCW) for shared points
-FAN_RADIUS_PT = 130               # fan mode: distance from the true point [points]
+FAN_ANGLES_DEG = (135, 187, 240)  # fan mode: screen directions (deg, 0 = right, CCW) for shared points
+FAN_RADIUS_PT = 30                # fan mode: distance from the true point [points]
 STACK_LABEL_OFFSET = np.array([0.0, 0.30, 0.50])    # label placed in empty space + leader line
 LABEL_SIDE = {20: "right", 3: "left"}                   # per-ID label position override: "left"/"right" (default: above)
 
@@ -207,7 +207,7 @@ def plot(out_path, show_ids=True, show_table=True, fan_shared=False):
                                     off[0] / 72, off[1] / 72, fig.dpi_scale_trans))
                     ax.add_artist(mk)
                     if show_ids:
-                        loff = (FAN_RADIUS_PT + 17) * np.array([np.cos(ang), np.sin(ang)])
+                        loff = (FAN_RADIUS_PT + 14) * np.array([np.cos(ang), np.sin(ang)])
                         ax.annotate(str(idx), (x2, y2), xytext=tuple(loff), textcoords="offset points",
                                     fontsize=8.5, fontweight="bold", ha="center", va="center",
                                     zorder=11, bbox=dict(boxstyle="round,pad=0.12", fc="white",
