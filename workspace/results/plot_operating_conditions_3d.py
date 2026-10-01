@@ -31,12 +31,14 @@ from mpl_toolkits.mplot3d import proj3d
 # ----------------------------------------------------------------------------
 # Settings
 # ----------------------------------------------------------------------------
-OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "3d_projection.png")
+OUT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUT_PATH = os.path.join(OUT_DIR, "3d_projection.png")                # ID labels + table
+OUT_PATH_CLEAN = os.path.join(OUT_DIR, "3d_projection_clean.png")    # no ID labels, no table
 SPREAD_GAMMA = 0.6          # 1.0 = linear, < 1 spreads points near nominal
-VIEW_ELEV, VIEW_AZIM = 22, -150   # viewed from the f0 = 30 Hz / fsw = 2 kHz quadrant
+VIEW_ELEV, VIEW_AZIM = 22, -146   # viewed from the f0 = 30 Hz / fsw = 2 kHz quadrant
 STACK_SIZES = (1900, 560, 150)    # marker sizes for points sharing one position (back -> front)
 STACK_LABEL_OFFSET = np.array([0.0, 0.30, 0.50])    # label placed in empty space + leader line
-LABEL_SIDE = {}                   # per-ID label position override: "left"/"right" (default: above)
+LABEL_SIDE = {20: "right", 3: "left"}                   # per-ID label position override: "left"/"right" (default: above)
 
 NOMINAL = {"f0": 60.0, "fsw": 8.0, "V": 100.0}          # Hz, kHz, V
 AXIS_RANGE = {"f0": (30.0, 90.0), "fsw": (2.0, 14.0), "V": (50.0, 200.0)}
@@ -111,10 +113,14 @@ class Arrow3D(FancyArrowPatch):
         return np.min(zs)
 
 
-def main():
+def plot(out_path, show_ids=True, show_table=True):
     plt.rcParams.update({"font.size": 10})
-    fig = plt.figure(figsize=(16, 10), dpi=150)
-    ax = fig.add_axes([0.0, 0.02, 0.66, 0.92], projection="3d")
+    if show_table:
+        fig = plt.figure(figsize=(16, 10), dpi=150)
+        ax = fig.add_axes([0.0, 0.02, 0.66, 0.92], projection="3d")
+    else:
+        fig = plt.figure(figsize=(11, 10), dpi=150)
+        ax = fig.add_axes([0.0, 0.02, 1.0, 0.92], projection="3d")
     ax.set_proj_type("ortho")
     ax.view_init(elev=VIEW_ELEV, azim=VIEW_AZIM)
     ax.set_axis_off()
@@ -182,9 +188,12 @@ def main():
             for k, (idx, (split, _, _, _, r, _, _)) in enumerate(members):
                 ax.scatter(*base, s=STACK_SIZES[k], marker=R_MARKER[r], color=SPLIT_COLOR[split],
                            edgecolor="k", linewidth=1.2, depthshade=False, zorder=6 + k)
-            ids = ", ".join(str(idx) for idx, _ in members)
+            ids = ", ".join(str(idx) for idx, _ in members) if show_ids else ""
             if not base.any():
-                ids += "\n(nominal 60 Hz / 8 kHz / 100 V)"
+                ids = (ids + "\n(nominal 60 Hz / 8 kHz / 100 V)" if ids
+                       else "nominal 60 Hz / 8 kHz / 100 V")
+            if not ids:
+                continue
             lbl = base + STACK_LABEL_OFFSET
             ax.plot(*zip(base, lbl), color="0.35", lw=0.8, zorder=5)
             ax.text(*lbl, ids, fontsize=8.5, fontweight="bold",
@@ -194,16 +203,21 @@ def main():
 
         idx, (split, _, _, _, r, _, _) = members[0]
         ax.scatter(*base, s=R_SIZE[r], marker=R_MARKER[r], color=SPLIT_COLOR[split],
-                   edgecolor="k", linewidth=1.0, depthshade=False, zorder=6)
+                   edgecolor="k", linewidth=1.0, depthshade=False, zorder=10)
+        if not show_ids:
+            continue
         side = LABEL_SIDE.get(idx, "top")
-        if side == "right":
-            lpos, ha, va = base + np.array([0.09, 0.09, 0]), "left", "center"
-        elif side == "left":
-            lpos, ha, va = base + np.array([-0.07, 0.07, 0]), "right", "center"
+        box = dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.75)
+        if side in ("left", "right"):
+            # screen-space offset so the label sits beside the marker in any view
+            x2, y2, _ = proj3d.proj_transform(*base, ax.get_proj())
+            dx = 9 if side == "right" else -9
+            ax.annotate(str(idx), (x2, y2), xytext=(dx, 0), textcoords="offset points",
+                        fontsize=8.5, fontweight="bold", va="center", zorder=11, bbox=box,
+                        ha="left" if side == "right" else "right")
         else:
-            lpos, ha, va = base + np.array([0, 0, 0.075]), "center", "bottom"
-        ax.text(*lpos, str(idx), fontsize=8.5, fontweight="bold", ha=ha, va=va, zorder=7,
-                bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.75))
+            ax.text(*(base + np.array([0, 0, 0.075])), str(idx), fontsize=8.5,
+                    fontweight="bold", ha="center", va="bottom", zorder=11, bbox=box)
 
     # ---- legends --------------------------------------------------------------
     split_handles = [Line2D([], [], marker="o", ls="", markersize=10, markerfacecolor=c,
@@ -218,6 +232,22 @@ def main():
     fig.add_artist(leg1)
 
     # ---- condition table --------------------------------------------------------
+    if show_table:
+        draw_condition_table(fig)
+
+    scale_note = ("linear" if SPREAD_GAMMA == 1.0
+                  else f"each half-axis scaled |x|^{SPREAD_GAMMA:g} around nominal to spread points")
+    fig.suptitle("3D Operating Conditions (Train vs Unseen/Test)", fontsize=17, y=0.975)
+    fig.text(0.33 if show_table else 0.5, 0.925,
+             f"Axes cross at nominal (60 Hz, 8 kHz, 100 V); {scale_note}. "
+             "Dashed: projection onto V = 100 V plane.", ha="center", fontsize=9, color="0.35")
+
+    fig.savefig(out_path, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print(f"saved: {out_path}")
+
+
+def draw_condition_table(fig):
     tax = fig.add_axes([0.63, 0.04, 0.36, 0.88])
     tax.set_axis_off()
     cells, colors = [], []
@@ -242,14 +272,10 @@ def main():
             cell.set_text_props(ha="left")
             cell.PAD = 0.03
 
-    scale_note = ("linear" if SPREAD_GAMMA == 1.0
-                  else f"each half-axis scaled |x|^{SPREAD_GAMMA:g} around nominal to spread points")
-    fig.suptitle("3D Operating Conditions (Train vs Unseen/Test)", fontsize=17, y=0.975)
-    fig.text(0.33, 0.925, f"Axes cross at nominal (60 Hz, 8 kHz, 100 V); {scale_note}. "
-             "Dashed: projection onto V = 100 V plane.", ha="center", fontsize=9, color="0.35")
 
-    fig.savefig(OUT_PATH, bbox_inches="tight", facecolor="white")
-    print(f"saved: {OUT_PATH}")
+def main():
+    plot(OUT_PATH, show_ids=True, show_table=True)
+    plot(OUT_PATH_CLEAN, show_ids=False, show_table=False)
 
 
 if __name__ == "__main__":
