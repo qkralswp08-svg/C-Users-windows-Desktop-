@@ -21,5 +21,5 @@
 ## 2026-09-30 — train80.py 운전조건 3D 분포도 수정
 - 요청: Train/Unseen 운전조건 3D projection 그림의 축 화살표 방향 수정 + 조건 위치 구분되게 펼치기
 - Skill: (없음, matplotlib 작도)
-- 결과: `workspace/results/plot_operating_conditions_3d.py` → `3d_projection.png`. 축은 nominal(60 Hz/8 kHz/100 V)에서 교차, 증가 방향 끝에만 화살표; half-axis |x|^0.6 스케일로 중심부 확장(SPREAD_GAMMA=1.0 이면 선형); 동일 좌표(R 10/22/47 Ω) 점은 부채꼴로 분리 + 리더선; 점 ID ↔ 우측 조건표
+- 결과: `workspace/results/plot_operating_conditions_3d.py` → `3d_projection.png`. 축은 nominal(60 Hz/8 kHz/100 V)에서 교차, 증가 방향 끝에만 화살표; half-axis |x|^0.6 스케일로 중심부 확장(SPREAD_GAMMA=1.0 이면 선형); nominal 의 R 10/22/47 Ω 점(ID 7, 8, 12)은 원점에 크기를 달리해 겹쳐 표시(큰 것이 뒤); 시점은 f0=30 Hz·fsw=2 kHz 사분면 쪽(azim −150°); 점 ID ↔ 우측 조건표
 - 한계: 원래 plot 코드는 받지 못해 train80.py 조건 목록으로 재작성. 1조건 파일은 코드에 R 값이 없어 R1=47, R4=10, 나머지=22 Ω 로 가정 (사용자 설명·기존 그림 기준)

@@ -33,10 +33,10 @@ from mpl_toolkits.mplot3d import proj3d
 # ----------------------------------------------------------------------------
 OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "3d_projection.png")
 SPREAD_GAMMA = 0.6          # 1.0 = linear, < 1 spreads points near nominal
-VIEW_ELEV, VIEW_AZIM = 22, -58
-FAN_SPAN_DEG = (22, 68)      # fan direction range in the f0-fsw plane (empty +f0/+fsw quadrant)
-FAN_RADIUS = 0.55
-LABEL_SIDE = {4: "left"}  # per-ID label position override (default: above)          # offset for coincident points (normalized units)
+VIEW_ELEV, VIEW_AZIM = 22, -150   # viewed from the f0 = 30 Hz / fsw = 2 kHz quadrant
+STACK_SIZES = (1900, 560, 150)    # marker sizes for points sharing one position (back -> front)
+STACK_LABEL_OFFSET = np.array([0.0, 0.30, 0.50])    # label placed in empty space + leader line
+LABEL_SIDE = {}                   # per-ID label position override: "left"/"right" (default: above)
 
 NOMINAL = {"f0": 60.0, "fsw": 8.0, "V": 100.0}          # Hz, kHz, V
 AXIS_RANGE = {"f0": (30.0, 90.0), "fsw": (2.0, 14.0), "V": (50.0, 200.0)}
@@ -49,7 +49,7 @@ AXIS_LABEL = {"f0": "f0 [Hz]", "fsw": "fsw [kHz]", "V": "Output fundamental volt
 
 SPLIT_COLOR = {"Train": "#1f77b4", "Unseen/Test": "#ff7f0e"}
 R_MARKER = OrderedDict([(10, "o"), (22, "s"), (32, "^"), (47, "*")])
-R_SIZE = {10: 150, 22: 130, 32: 160, 47: 320}
+R_SIZE = {10: 150, 22: 130, 32: 160, 47: 320}   # stacking order uses this ranking
 
 # (split, f0 [Hz], fsw [kHz], V [V], R [ohm], group, file keys normal/aged)
 CONDITIONS = [
@@ -118,6 +118,7 @@ def main():
     ax.set_proj_type("ortho")
     ax.view_init(elev=VIEW_ELEV, azim=VIEW_AZIM)
     ax.set_axis_off()
+    ax.computed_zorder = False
 
     L = 1.30  # axis half-length in normalized units (range ends are at +-1)
     lim = 1.42
@@ -154,11 +155,7 @@ def main():
                 ax.text(*(c - 0.075 * perp), f"{tv:g}", fontsize=8.5, color="0.2",
                         ha="center", va="top")
 
-    ax.scatter(0, 0, 0, s=18, color="k", zorder=5)
-    ax.text(0.05, 0.05, -0.1,
-            "nominal\n60 Hz / 8 kHz / 100 V", fontsize=8, color="0.3",
-            ha="left", va="top")
-
+    
     # ---- points -------------------------------------------------------------
     groups = OrderedDict()
     for idx, row in enumerate(CONDITIONS, start=1):
@@ -179,25 +176,34 @@ def main():
         if abs(base[2]) > 1e-9 or (abs(base[0]) > 1e-9 and abs(base[1]) > 1e-9):
             ax.scatter(*base[:2], 0, s=10, color="0.45", zorder=3)
 
-        n = len(members)
-        for k, (idx, (split, _, _, _, r, _, _)) in enumerate(members):
-            pos = base.copy()
-            if n > 1:
-                ang = np.deg2rad(np.linspace(*FAN_SPAN_DEG, n)[k])
-                # fan out in the horizontal f0-fsw plane (keeps V unchanged)
-                pos = base + FAN_RADIUS * np.array([np.cos(ang), np.sin(ang), 0.0])
-                ax.plot(*zip(base, pos), color="0.3", lw=0.8, zorder=4)
-            ax.scatter(*pos, s=R_SIZE[r], marker=R_MARKER[r], color=SPLIT_COLOR[split],
-                       edgecolor="k", linewidth=1.0, depthshade=False, zorder=6)
-            side = "right" if n > 1 else LABEL_SIDE.get(idx, "top")
-            if side == "right":   # fanned points: label beside the marker
-                lpos, ha, va = pos + np.array([0.09, 0.09, 0]), "left", "center"
-            elif side == "left":
-                lpos, ha, va = pos + np.array([-0.07, 0.07, 0]), "right", "center"
-            else:
-                lpos, ha, va = pos + np.array([0, 0, 0.075]), "center", "bottom"
-            ax.text(*lpos, str(idx), fontsize=8.5, fontweight="bold", ha=ha, va=va, zorder=7,
+        if len(members) > 1:
+            members = sorted(members, key=lambda m: -R_SIZE[m[1][4]])
+            # same position: stack at the true point, largest behind -> smallest in front
+            for k, (idx, (split, _, _, _, r, _, _)) in enumerate(members):
+                ax.scatter(*base, s=STACK_SIZES[k], marker=R_MARKER[r], color=SPLIT_COLOR[split],
+                           edgecolor="k", linewidth=1.2, depthshade=False, zorder=6 + k)
+            ids = ", ".join(str(idx) for idx, _ in members)
+            if not base.any():
+                ids += "\n(nominal 60 Hz / 8 kHz / 100 V)"
+            lbl = base + STACK_LABEL_OFFSET
+            ax.plot(*zip(base, lbl), color="0.35", lw=0.8, zorder=5)
+            ax.text(*lbl, ids, fontsize=8.5, fontweight="bold",
+                    ha="right", va="bottom", zorder=10,
                     bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.75))
+            continue
+
+        idx, (split, _, _, _, r, _, _) = members[0]
+        ax.scatter(*base, s=R_SIZE[r], marker=R_MARKER[r], color=SPLIT_COLOR[split],
+                   edgecolor="k", linewidth=1.0, depthshade=False, zorder=6)
+        side = LABEL_SIDE.get(idx, "top")
+        if side == "right":
+            lpos, ha, va = base + np.array([0.09, 0.09, 0]), "left", "center"
+        elif side == "left":
+            lpos, ha, va = base + np.array([-0.07, 0.07, 0]), "right", "center"
+        else:
+            lpos, ha, va = base + np.array([0, 0, 0.075]), "center", "bottom"
+        ax.text(*lpos, str(idx), fontsize=8.5, fontweight="bold", ha=ha, va=va, zorder=7,
+                bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.75))
 
     # ---- legends --------------------------------------------------------------
     split_handles = [Line2D([], [], marker="o", ls="", markersize=10, markerfacecolor=c,
