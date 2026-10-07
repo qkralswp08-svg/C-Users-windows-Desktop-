@@ -2,6 +2,7 @@
 
 관련성: 매우 높음 / 높음 / 보통 / 참고용. 근거 수준: 본문 / 초록. 노트는 `papers/notes/` 링크.
 2026-09-29 문헌조사(저널 논문 중심)에서 추가된 항목은 근거 수준이 모두 **초록(스니펫)** 이며 서지는 `(확인 필요)` 표기를 보고서(`workspace/reports/2026-09-29-inverter-capacitor-condition-monitoring-survey.md`) 3절에서 확인할 것. 전체 약 100편 중 프로젝트 관련성 보통 이상만 수록.
+2026-10-07 AI 활용 보고서의 검증 참고문헌(AI 진단·아크·Edge AI 포함, 등급 V1/V2/P)은 `workspace/reports/2026-10-07-ai-utilization/06_reference_verification.md` 참조.
 
 | # | 제목 | 저자 | 연도 | 출처 | DOI/URL | 대상 시스템 | 입력 신호 | 방법 | 진단 대상 | Online | 검증 | ML | 관련성 | 근거 수준 | 노트 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -34,9 +35,9 @@
 | M28 | Practical Online Condition Monitoring of DC-Link Capacitors in Modular Multilevel Converters: A Comparative Approach | (확인 필요) | 2024 | IEEE OJ-PEL (확인 필요) | 10.1109/OJPEL.2024.3387829 (확인 필요) | MMC | SM 전압+추정 전류 | 암 내 비교로 온도 분리 | C | ○ | — | × | 높음 | 초록 | — |
 | M29 | Analysis of dc-link capacitor current in three-level neutral point clamped and cascaded H-bridge inverters | G. I. Orfanoudakis et al. | 2013 | IET Power Electron. | 10.1049/iet-pel.2012.0422 | 3L-NPC, CHB | — | 커패시터 전류 해석 | (CM 아님) | — | — | × | 매우 높음(이론) | 초록 | — |
 | D2 | Deep learning-based estimation technique for capacitance and ESR of input capacitors in single-phase DC/AC converters | H.-J. Park, J.-C. Kim, S. Kwak | 2022 | J. Power Electron. 22 | 10.1007/s43236-021-00366-x | 단상 DC/AC | vC, iC FFT(2f1, fsw) | DNN | C, ESR | (확인 필요) | 실험 | ○ | 매우 높음 | 초록 | core-papers |
-| D3 | Machine Learning-Based Condition Monitoring for DC-Link Capacitors in AC/DC/AC Converters | (확인 필요) | 2024/25 | IEEE TIE 72(4) | (확인 필요) | AC/DC/AC 2L | vdc 리플 PSD | GPR | C | ○ | 실험(다중 조건) | ○ | 매우 높음 | 초록 | core-papers |
+| D3 | Machine Learning-Based Condition Monitoring for DC-Link Capacitors in AC/DC/AC Converters | K. Örüklü, Ş. Ağalar (2026-10-07 확인) | 2024/25 | IEEE TIE 72(4):4227–4237 | (확인 필요) | AC/DC/AC 2L | vdc 리플 PSD | GPR | C | ○ | 실험(다중 조건) | ○ | 매우 높음 | 초록 | core-papers |
 | D1 | DC-Link Electrolytic Capacitors Monitoring Techniques Based on Advanced Learning Intelligence Techniques for Three-Phase Inverters | H. Dang, H. Park, S. Kwak, Choi | 2022 | Machines 10(12):1174 | (확인 필요) | 3상 인버터 | 소스 전류 | ML(확인 필요) | C/ESR | (확인 필요) | (확인 필요) | ○ | 높음 | 초록 | — |
-| D6 | DC Capacitor Parameter Estimation Technique for Three-Phase DC/AC Converter Using Deep Learning Methods with Different Frequency Band Inputs | (확인 필요) | 2023 | J. Electr. Eng. Technol. | 10.1007/s42835-023-01424-z | 3상 DC/AC | 대역 분리 입력 | DL | C, ESR | (확인 필요) | (확인 필요) | ○ | 높음 | 초록 | — |
+| D6 | DC Capacitor Parameter Estimation Technique for Three-Phase DC/AC Converter Using Deep Learning Methods with Different Frequency Band Inputs | H.-J. Park, S. Kwak (2026-10-07 확인) | 2023 | J. Electr. Eng. Technol. 18(3):1841–1850 | 10.1007/s42835-023-01424-z | 3상 DC/AC | 대역 분리 입력 | DL | C, ESR | (확인 필요) | (확인 필요) | ○ | 높음 | 초록 | — |
 | D5 | Capacitance estimation algorithm based on DC-link voltage ripples using hybrid machine learning techniques in power electronics converters | (확인 필요) | 2025 | Results in Engineering | (확인 필요) | DC-link | vdc 리플 | 하이브리드 ML | C | SW | (확인 필요) | ○ | 보통 | 초록 | — |
 | D13 | Deep neural network-based lifetime diagnosis algorithm with electrical capacitor accelerated life test | (확인 필요) | 2024 | J. Power Sources | (확인 필요) | 단품 ALT | V, I, R → 이미지 | CNN | 수명 등급 | × | 실제 ALT | ○ | 보통 | 초록 | — |
 | D15 | Converter Capacitor Temperature Estimation Based on Continued Training LSTM under Variable Load Conditions | (확인 필요) | 2024 | Sensors 24(13):4304 | 10.3390/s24134304 | 컨버터 | 다주파 전류+ESR(T,I) | LSTM | 온도 | ○ | 실험 | ○ | 보통 | 초록 | — |
