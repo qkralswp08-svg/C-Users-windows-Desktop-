@@ -31,7 +31,7 @@
 
 | 항목 | 결과 | 근거 |
 |---|---|---|
-| train80.py 1–1908행과의 차이 | 경로 문자열(73, 88, 108, 781, 905–906, 1045–1046, 1187–1188, 1289–1290행: `D:\Users\choij\...\데이터 모음`), **tek0172 활성**(476–488행), 1908행 | `diff --strip-trailing-cr` (확인) |
+| train80.py 1–1908행과의 차이 | 경로 문자열(73, 88, 108, 781, 905–906, 1045–1046, 1187–1188, 1289–1290행: `D:\Users\<user>\...\데이터 모음`), **tek0172 활성**(476–488행), 1908행 | `diff --strip-trailing-cr` (확인) |
 | 1908행 | train80: `"같은 TXT 경로가 중복 등록되어 있습니다.\n"` 다음에 f-string 이 이어짐. file2: `"같은 TXT 경로가 중복 등록되어 있습니다")` 로 바로 닫히고 파일 끝(EOF, 개행 없음) | 확인 |
 | 구문 | `ast.parse` 성공. 정의된 함수는 `map_label_to_binary` ~ `collect_metadata` 의 10개뿐. `collect_metadata` 에 `return` 이 없어 None 을 반환함. `if __name__ == "__main__"` 없음 | 확인 |
 | 없는 코드 | `load_current_and_ripple`, `preprocess_*`, `build_windows_for_file`, `split_train_validation_test_indices`, dataset 빌더, `fit/apply_preprocessor`, 모든 모델, `train_model`, `evaluate_model`, `run_comparison`, `main` | 확인 |

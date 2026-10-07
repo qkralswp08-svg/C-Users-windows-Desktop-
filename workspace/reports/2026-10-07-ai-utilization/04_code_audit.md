@@ -2,8 +2,8 @@
 
 - 작성일: 2026-10-07
 - 대상 코드(원본은 읽기만 했고 수정하지 않음 — sha256 동일 확인)
-  - **코드①** `…_____train80.py` (3,491행, 이하 "train80"): 전체 구현. 행 번호는 이 파일 기준.
-  - **코드②** `…_____.py` (1,908행): train80의 1–1,908행과 거의 같으나 데이터 경로, `TWO_CONDITION_TEST_FILES`의 tek0172 활성 여부만 다르고 **1,908행 `collect_metadata` 중간에서 잘린 부분 파일**이다. 신호 로딩·분할·모델·학습·평가·`main`이 없어 실행해도 결과를 만들 수 없다 [확인].
+  - **코드①** `…_____train80.py` (3,491행, 이하 "train80"): 실행 가능한 전체 스크립트. 행 번호는 이 파일 기준. **단, 연구실 주 모델 자체는 아니다** — 코드 설명(17–24행, 86행)에 따르면 제공되지 않은 "첨부 CNN"의 활성 파일 목록·순서·라벨, 추가학습·테스트 구성, 2048점 window, file_uid seed=42 분할, TRAIN-only z-score를 복사하고 "PI, PI 보조 손실, 기본파 전류(I1)/부하 임피던스 계산"을 제외한 **입력·모델 비교 실험 스크립트**다(1466, 3253행). 따라서 데이터·분할·평가 구조에 관한 판정은 원 CNN에도 해당될 가능성이 높고[추정], 모델 구조·파라미터·TFLite 관련 판정은 이 스크립트에만 해당한다. "PI"의 의미는 확인되지 않는다[미확인].
+  - **코드②** `…_____.py` (1,908행): train80의 1–1,908행과 거의 같으나 데이터 경로, `TWO_CONDITION_TEST_FILES`의 tek0172 활성 여부만 다르고 **1,908행 `collect_metadata` 중간에서 잘린 부분 파일**이다(업로드·복사 중 잘렸을 가능성). `ast.parse`는 되지만 신호 로딩·분할·모델·학습·평가·`main`이 없어 결과를 만들 수 없다 [확인].
 - 등급: **PASS**(적절) / **WARNING**(단정할 수 없으나 논문 수준에서 추가 검증 필요) / **FAIL**(누수·잘못된 평가·구현 오류 등 명백한 문제) / **RECOMMENDATION**(필수는 아니나 신뢰도 향상).
 - 표기: [확인] 코드·실행 결과로 직접 확인 / [계산] 코드 상수로 계산 / [추정] 해석·추론 / [미확인] 확인 불가.
 - **실행 검증 범위**: 실측 tek*.txt 데이터는 제공되지 않았다. 따라서 실측 정확도는 하나도 확인하지 못했다. 대신 (i) 원본 코드를 **수정 없이** CLI 인자(`--data-root`, `--result-root`)만 바꿔 합성 데이터로 끝까지 실행했고(TensorFlow 2.21 / Keras 3.15, 4개 모델), (ii) 원본 함수를 import해 평가 프로토콜만 바꾸는 별도 검증 도구를 실행했다(§8). **합성 데이터 수치는 코드 동작 확인용이며 연구실 모델의 성능이 아니다.**
@@ -115,7 +115,7 @@ flowchart TD
 | C2 | 동일 입력 | **PASS(형식) / WARNING(유효 정보)** | 2411–2430, 2740–2745, 2710–2712 | 같은 배열을 쓰지만 LSTM 앞 `AveragePooling1D(4)`는 등가 25 kHz 데시메이션이다. 14 kHz 성분은 이득 0.58로 줄고 11 kHz로 alias된다[계산]. LSTM은 다른 대역 정보를 본다 |
 | C3 | normalization 동일 | **PASS** | 2973–2984 | 조합마다 TRAIN으로 재적합, 모델 간 동일 |
 | C4 | hyperparameter / capacity | **WARNING** | 74–81, 2394–2408, 2695–2737 | 학습 가능 파라미터(A1, Keras summary 실측): **CNN 11,298 / LSTM 5,474 / MLP 271,042**, RF 200 full-depth tree. 모델별 튜닝 없음 → "모델 계열" 비교가 아니라 "이 특정 설정끼리"의 비교 |
-| C5 | 입력 표현 적합성 | **WARNING** | 2740–2745, 2717–2723 | RF·MLP는 원파형 2048점을 flatten한다. window 시작이 기본파 위상과 무관하므로 같은 위치 샘플의 의미가 매번 다르다. CNN(GAP)만 이동 불변이다. 합성 라벨 데이터에서 코드의 RF는 Validation 77%, 같은 split의 FFT 특징 RF는 100%였다(Agent E). `max_features="sqrt"`라 분기마다 scalar가 후보에 들 확률 ≈2.2% → RF에서 B 조합 효과가 희석[계산] |
+| C5 | 입력 표현 적합성 | **WARNING** | 2740–2745, 2717–2723 | RF·MLP는 원파형 2048점을 flatten한다. window 시작이 기본파 위상과 무관하므로 같은 위치 샘플의 의미가 매번 다르다. CNN(GAP)만 이동 불변이다. (참고: 합성 라벨 데이터에서 코드의 RF는 Validation 77%, 같은 split의 FFT 특징 RF는 100%였으나(Agent E), 이는 B1에서 FAIL로 판정한 internal VALIDATION 수치이므로 입력 표현 효과의 근거로는 약하다. unseen 기준 비교는 §8.4 참조.) `max_features="sqrt"`라 분기마다 scalar가 후보에 들 확률 ≈2.2% → RF에서 B 조합 효과가 희석[계산] |
 | C6 | Training epoch / early stopping | **WARNING** | 1444, 1448, 3005–3010 | EPOCHS=15, patience=10 → best val_loss가 5 epoch 이내일 때만 ES가 발동해 사실상 15 epoch 고정. `restore_best_weights=True`는 **Keras 3.15 소스에서 학습 종료 시 항상 복원됨을 확인**했으나, tf.keras 2.x 일부 버전은 조기종료가 발동할 때만 복원한다 → `run_config.json`의 `tensorflow_version`(3477)으로 확인 필요 |
 | C7 | Random seed / 반복 | **FAIL**(모델 순위 주장 기준) | 2679–2684, 2990, 2995 | seed 42 단일 실행, init seed와 split seed가 같은 상수, `enable_op_determinism` 없음. 반복 실행이 없으므로 모델 간 차이와 seed 분산을 구분할 수 없다 |
 | C8 | Class weighting | **WARNING** | 80, 2994, 3012–3015 | RF만 `balanced`, Keras는 없음. 파일 수는 11/11로 균형이나 window 수는 파일 길이에 좌우 [미확인] |
@@ -133,7 +133,7 @@ flowchart TD
 | 수용영역·대역 | **15 샘플 = 150 µs** 국부 패턴의 전역 평균, 위상 불변, 진폭 민감 [계산] | 12.5 kHz 이상 감쇠·alias | 위치 고정 가중치 | 샘플 위치별 임계값 |
 | 장점 | 파라미터 적음, 위상 비정렬 window에 적합 | 파라미터 최소 | 구현 단순 | 튜닝 거의 불필요, 특징 중요도 |
 | 한계 | 기본파 주기(11–33 ms)를 직접 못 봄, 센서 이득에 민감[추정] | 대역 손실, 15 epoch 부족 가능 | 과적합 위험, 위상 변화에 약함 | raw 입력 부적합, scalar 희석 |
-| Edge 적합성 | 높음: float32 약 45 KB, int8 약 12 KB[계산]. TFLite 변환 성공[실행] | 낮음: TFLite 변환이 `SELECT_TF_OPS`(Flex) 사용(3165–3167) → TFLite Micro 탑재 어려움 | 중간: 가중치 float32 약 1.06 MB | 낮음: 코드에 TFLite 경로 없음(joblib) |
+| Edge 적합성 | 높음: float32 약 45 KB, int8 약 12 KB[계산]. TFLite 변환 성공[실행] | 낮음: TFLite 변환이 `SELECT_TF_OPS`(Flex) 사용(3165–3167) → TFLite Micro 탑재 어려움 | 중간: 가중치 float32 약 1.1 MB | 낮음: 코드에 TFLite 경로 없음(joblib) |
 | 비교 공정성 메모 | 대역·불변성 면에서 유리한 설계 | 대역 손실로 불리 | 위치 의존·과대 용량 | 표현 방식이 불리 → 특징 기반 RF 추가 필요 |
 
 ---
@@ -164,7 +164,7 @@ flowchart TD
 | Confusion Matrix | split별 CSV/PNG | 3089–3101 | PASS |
 | 조건별(case) 성능 | case mean/min, axis 정확도 | 3039–3077 | PASS(+주의: reference가 모든 축 요약에 반복 포함 3049–3077) |
 | 파일 단위 판정 | window 정답률만, 다수결·확률 평균 판정 없음 | 3042–3044 | WARNING |
-| 신뢰구간 / 반복 seed / 유의성 검정 | 없음 | — | **FAIL**(통계적 주장 기준) — 유효 표본은 파일 수(unseen 35)이며, 35/35를 모두 맞혀도 Clopper–Pearson 95% 하한은 90.0%, 3조건 8/8은 63.1% [계산, Agent F] |
+| 신뢰구간 / 반복 seed / 유의성 검정 | 없음 | — | **FAIL**(통계적 주장 기준) — 유효 표본은 파일 수(unseen 35)이며, 35/35를 모두 맞혀도 Clopper–Pearson 95% 하한은 90.0%, 3조건 8/8은 63.1% [계산, Agent F]. (검증 도구는 Wilson 구간을 출력한다. 둘 다 이항 비율 구간이며 소표본에서는 Clopper–Pearson이 더 보수적이다.) |
 | In-distribution vs OOD 차이 | Validation / Internal Test / Unseen을 나란히 출력 | 3174–3198 | PASS(출력 구조) — 단 internal TEST는 OOD 대비 기준이 아니라 "같은 녹화" 기준임을 명시해야 함 |
 
 ---
@@ -245,19 +245,19 @@ flowchart TD
 
 ### 8.4 검증 도구 실행 결과 (합성 데이터 — 메커니즘 예시)
 
-- 합성 데이터: `verification_code/synthetic_inverter_data.py`로 원본 코드의 활성 파일 목록 57개를 그대로 만들었다(2-level SPWM 3상 인버터 + RL 부하 + C·ESR DC-link, 정상 C=1000 µF/ESR=0.1 Ω, 노화 C −20%/ESR ×2, 파일당 46 window). **모든 소자값은 임의 가정이며, 측정 블록·장착 상태 효과는 넣지 않았다.** 따라서 아래 수치는 "평가 프로토콜이 무엇을 측정하는가"를 보이는 예시일 뿐이다.
+- 합성 데이터: `verification_code/synthetic_inverter_data.py`로 원본 코드의 활성 파일 목록 57개를 그대로 만들었다(2-level SPWM 3상 인버터 + RL 부하 + C·ESR DC-link, 정상 C=1000 µF/ESR=0.1 Ω, 노화 C −20%/ESR ×2, 파일당 46 window). §6.1의 물리 예시(ESR 50 mΩ)와는 서로 다른 임의 가정값이다. **모든 소자값은 임의 가정이며, 측정 블록·장착 상태 효과는 넣지 않았다.** 따라서 아래 수치는 "평가 프로토콜이 무엇을 측정하는가"를 보이는 예시일 뿐이다.
 - 지표: 파일 단위 다수결 정확도(Figure: `figures/fig_synthetic_protocols.png`, `fig_synthetic_gain.png`, 원자료 `data/synthetic_validation_results.csv`).
 
 | 실험 | CNN(원본 구조) | RF raw(원본 구조) | RF 스펙트럼 모양(보조) | 관찰 |
 |---|---:|---:|---:|---|
 | E1 internal TEST(같은 파일) | 95.5 | 86.4 | 100 | |
-| E1 Unseen 전체(내삽) | 85.7 | 100 | 97.1 | **internal TEST 순위(CNN > RF)와 unseen 순위(RF > CNN)가 뒤집힘** |
-| E2 LOCO(조건쌍 통째 제외, 11 fold) | 68.2 ± 25.2 | 81.8 ± 25.2 | 86.4 ± 23.4 | 경계 조건(V1 50/200 V, R4 등) fold에서 50%로 실패 → 내삽 성능이 외삽 성능을 대변하지 않음 |
+| E1 Unseen 전체(내삽) | 85.7 | 100 | 97.1 | internal TEST에서는 CNN 21/22(Wilson 95% CI 78–99%)와 RF 19/22(67–95%)의 구간이 겹치지만, unseen에서는 RF 35/35(90–100%)와 CNN 30/35(71–94%)가 겹치지 않음. 같은 RF라도 log 대역 에너지 입력은 85.7% |
+| E2 LOCO(조건쌍 통째 제외, 11 fold, fold당 2파일 → fold 정확도는 0/50/100%만 가능) | 68.2 ± 25.2 | 81.8 ± 25.2 | 86.4 ± 23.4 | CNN은 7/11 fold(V1 50/200 V, R1, R4, f0 90 Hz, fsw 2 kHz, outer 40 Hz·4 kHz)에서 50%, 경계 fold인 fsw 14 kHz·f0 30 Hz에서는 100% → 경계만으로 설명되지 않으며 분산이 큼. R 값은 합성 가정값 |
 | E3 라벨 뒤집기 후 internal TEST(뒤집힌 라벨 기준, 3회) | 83.3 | 92.4 | 100 | **무의미한 라벨도 internal TEST에서는 높게 맞힘** → internal TEST는 녹화 식별을 측정 |
-| E3 라벨 뒤집기 후 Unseen(실제 라벨 기준) | 45.7 | 31.4 | 55.2 | 우연 수준 이하 |
+| E3 라벨 뒤집기 후 Unseen(실제 라벨 기준) | 45.7 | 31.4 | 55.2 | 우연 수준 부근 또는 이하 |
 | E4 운전조건만(COND_ONLY) | Unseen 48.6 | | | scalar shortcut 없음(설계대로) |
 | E4 진폭(log rms)+운전조건 로지스틱(AMP_ONLY) | Unseen 100 | | | 합성 세계에서는 단순 진폭 기준선이 CNN 이상 → DL의 이득은 기준선 대비로 보여야 함 |
-| E6 센서 이득 ×0.8 / ×0.9 / ×1.2 | 54.3 / 62.9 / 100 | 97.1 / 100 / 82.9 | 82.9 / 97.1 / 97.1 | **진폭 보존 입력의 CNN은 이득 ±10–20%에 크게 흔들림** |
+| E6 센서 이득 ×0.8 / ×0.9 / ×1.2 | 54.3 / 62.9 / 100 | 97.1 / 100 / 82.9 | 82.9 / 97.1 / 97.1 | **CNN은 이득을 낮추면 노화 recall이 0.72(공칭) → 0.30(×0.9) → 0.11(×0.8)로 급락**. 같은 진폭 보존 입력의 RF raw는 ×0.8–1.1에서 견고 → 원인(진폭 보존 vs 한쪽 방향 임계값 편향)은 per-window 정규화 ablation으로 확인 필요 |
 | E5 잡음 SNR 10 dB | 88.6 | 100 | 97.1 | 잡음보다 이득 오차가 더 큰 위험 |
 | E7 seed 3회 Unseen 전체 | 82.9 ± 9.9 | 100 ± 0 | 97.1 ± 0 | CNN 단일 seed 결과로 순위를 매기기 어려움 |
 
@@ -269,7 +269,7 @@ flowchart TD
 
 | 영역 | 항목 | 판정 | 핵심 근거(행) |
 |---|---|---|---|
-| 구조 | 코드② 부분 파일(1,908행 절단) | FAIL(실행 불가) | 코드② 1908 |
+| 구조 | 코드② 부분 파일(1,908행 절단) | N/A(제공 파일 불완전: 실행되나 결과 산출 불가) | 코드② 1908 |
 | 누수 | 같은 파일 window의 train/val/test 혼입 | **FAIL**(internal 지표의 해석) | 2074–2127 |
 | 누수 | 정규화 TRAIN-only | PASS | 2285–2346, 2974 |
 | 누수 | Unseen의 선정·조기종료 사용 | PASS | 3005–3015, 3212–3227 |

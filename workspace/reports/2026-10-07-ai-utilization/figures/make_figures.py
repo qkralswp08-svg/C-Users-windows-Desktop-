@@ -168,7 +168,7 @@ def fig_synthetic_gain():
     ax.set_ylim(40, 105)
     ax.set_xlim(0.78, 1.33)
     ax.legend(loc="lower right", fontsize=7)
-    ax.set_title("SYNTHETIC — amplitude-preserving input makes the CNN gain-sensitive", fontsize=9, loc="left")
+    ax.set_title("SYNTHETIC — CNN accuracy shifts with sensor gain\n(aged recall drops at low gain; cause to be tested by normalization ablation)", fontsize=9, loc="left")
     fig.savefig(HERE / "fig_synthetic_gain.png", dpi=170, bbox_inches="tight")
     plt.close(fig)
 

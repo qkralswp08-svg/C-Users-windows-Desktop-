@@ -23,5 +23,6 @@
 - Skill: literature-researcher, paper-comparator, python-analyzer, capacitor-aging-expert, signal-analyzer, report-writer, dataviz (에이전트 A·B1·B2·C·D·E·F·G·H 병렬)
 - 결과: `workspace/reports/2026-10-07-ai-utilization/` (01–07, agent_reports/, data/, figures/, verification_code/). 외부 후보 84편·연구실 29편 검증(WebSearch 스니펫 수준, 한도 200회 소진), 핵심 18편 비교. 원본 코드 무수정 실행(TF 2.21, 4모델×3조합, 합성 데이터) + 검증 도구(LOCO·라벨 뒤집기·이득·seed)
 - 핵심 발견: internal VAL/TEST = 같은 녹화 인접 window(FAIL, 라벨 무관 합성에서도 95%↑); unseen 은 학습 범위 내 내삽만; 정상·노화 쌍 설계로 운전조건 shortcut 은 없으나 측정 블록·커패시터 개체 교락으로 "노화 학습" 미입증; 진폭 보존 입력 → 센서 이득 민감; 비교용 파일②는 1908행 절단본
+- Red Team(H): 38건 지적(Critical 1 — 검증 코드가 주 모델이 아닌 '첨부 CNN' 파생 비교 스크립트, PI 보조 손실 제외판) → 전부 반영, 기록은 보고서 06 §8
 - 주의: 업로드 코드의 데이터셋은 토폴로지(2-level/NPC)·측정 지점이 코드에 기록되지 않음 — project-context 의 3L-NPC 설정과 같은 실험인지 미확인
 - 다음: (1) 실측 tek*.txt 로 검증 도구 실행(LOCO, 블록별 재집계, 이득 시험) (2) 커패시터 개체 ID·C/ESR·온도·Vdc 기록 (3) V2 서지 doi.org 확인
