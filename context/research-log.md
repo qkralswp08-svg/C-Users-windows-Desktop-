@@ -17,3 +17,10 @@
 - 한계: 컨테이너 네트워크 정책으로 학술 사이트 차단 → **전 논문 본문 확인 불가(초록 수준)**, 서지 일부 (확인 필요); 검색 예산 소진으로 일부 검색 미실행
 - 핵심 발견: 3L-NPC CM 저널은 2024–2026 4편(M1–M4)뿐이며 주입형 우세, M3 만 무주입 고유 성분; 스위치 전류 스펙트럼·자연 NP 전류 스펙트럼·출력 짝수 고조파를 노화 feature 로 쓴 저널 없음; NPC×ML/CNN 없음
 - 다음: (1) 네트워크 허용 후 M3, M1, M2, P26, M5, D3, D2, P20 정독 (2) MATLAB 민감도 실험(C1/C2/ESR vs 부하/변조 스윕, iSa2·ia·iNP·vNP 고조파) (3) Search-Papers.ps1 로 서지 (확인 필요) 채우기
+
+## 2026-10-08 — 핵심 논문 Top 20 읽기 우선순위 선정
+- 요청: 후보 약 100편(2026-09-29 조사)에서 DC-link·non-DC-link 포함 20편 선정, Tier S/A/B, 역할·읽기 목록 A/B/C
+- Skill: paper-comparator, capacitor-aging-expert, npc-inverter-expert (새 검색 없음)
+- 결과: `인버터 진단 논문/top20_reading_priority.md`, `top20_inverter_capacitor_comparison.csv`(UTF-8 BOM), `core_papers/` 워크시트 10개. Tier S = M3, M1, M2, M5, P26 / A = D2, D3, P20, R3, M4 / B = M29, M28, M10, P14, P32, P35, M25, M26, P39, D6. 전부 Abstract-level only.
+- 주의: M4 서지 신뢰도 낮음(Xplore 10149200 확인 후 유지/강등). 저장 경로는 저장소 루트의 `인버터 진단 논문/` (바탕화면 체크아웃 시 `C:\Users\windows\Desktop\인버터 진단 논문\`)
+- 다음: PDF 확보 → core_papers 워크시트 8–9절 작성(M3, M1, M2 우선) → MATLAB 민감도 실험 설계
