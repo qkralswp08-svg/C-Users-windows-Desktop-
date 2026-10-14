@@ -24,3 +24,10 @@
 - 결과: `인버터 진단 논문/top20_reading_priority.md`, `top20_inverter_capacitor_comparison.csv`(UTF-8 BOM), `core_papers/` 워크시트 10개. Tier S = M3, M1, M2, M5, P26 / A = D2, D3, P20, R3, M4 / B = M29, M28, M10, P14, P32, P35, M25, M26, P39, D6. 전부 Abstract-level only.
 - 주의: M4 서지 신뢰도 낮음(Xplore 10149200 확인 후 유지/강등). 저장 경로는 저장소 루트의 `인버터 진단 논문/` (바탕화면 체크아웃 시 `C:\Users\windows\Desktop\인버터 진단 논문\`)
 - 다음: PDF 확보 → core_papers 워크시트 8–9절 작성(M3, M1, M2 우선) → MATLAB 민감도 실험 설계
+
+## 2026-10-14 — DC-link 커패시터 On-board/Online 진단 Top 10 (전 응용)
+- 요청: NPC 에 한정하지 않고, 기존 센서·정상 운전 조건에서 DC-link 커패시터 C/ESR/SoH 를 진단하는 저널 논문 10편 선정·정밀 비교
+- Skill: literature-researcher → bibliographic-verifier(신규) → capacitor-aging-expert → paper-analyzer → paper-comparator (+npc-inverter-expert); 4개 응용 영역 병렬 탐색(검색 160회)
+- 결과: 후보 저널 58편 → Top 10. Tier S: Ghadrdan 2022 TPEL(DF, 출력전류 재구성), Ribeiro 2025 IEEE/CAA JAS(NPC 고유 성분, C+ESR), Hasegawa & Hirose 2024 TIA(전류 센서 없이 C+ESR) / A: Örüklü & Ağalar 2025 TIE, Sundararajan 2020 TPEL, Zhang 2023 TPEL(T-type), Min/Choi/Blaabjerg 2026 TIE(in press) / B: Zhao 2023 TPEL, Wechsler 2012 TIA, Baumann 2024 TPEL. 파일: `인버터 진단 논문/dc_link_capacitor_onboard_top10.md`, `dc_link_capacitor_onboard_top10_comparison.csv`
+- 한계: 출판사·DOI 호스트 DNS 차단 → 전 논문 Abstract-level only; Min 2026 TIE 권/쪽/DOI 미확인(in press), Zhang 2023·Meng 2023·Wu 2022 서지 재확인 필요; 풍력 IJEPES 2021 후보는 커패시터 논문 아님(제외)
+- 다음: PDF 확보 후 Rank 1–3 본문 확인(재구성 수식·상호변조 성분 정의·정류 리플 해석식) → 내 NPC 재구성 전류 스펙트럼 feature 설계에 반영
