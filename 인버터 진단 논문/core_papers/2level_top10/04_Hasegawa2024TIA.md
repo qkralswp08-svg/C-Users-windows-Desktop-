@@ -1,177 +1,158 @@
 # 04. Current-Sensor-Less Condition Monitoring of a DC-Link Capacitor Based on Analysis of a Six-Pulse Diode Rectifier Having AC and DC Inductors
+> Tier A · Rank 4 · **Evidence: Full text (PDF 원문 전체 확인, 2026-10-20)** — 이 파일은 2026-10-20 PDF 원문 36항목 분석으로 갱신됨(이전 Abstract-level 내용 대체). 수치는 원문 표·본문에 적힌 값만 기재했고, 없는 항목은 `Not reported (원문에 없음)`.
 
-> Tier A · Rank 4 · Score 76/100 · **Evidence: Abstract-level only** (본문 미열람; 아래 `Not reported / Full text verification required` 항목은 추측으로 채우지 않았다)
-
-### [1] 기본 논문 정보
+### 1. 정확한 제목, 저자, 연도, 저널, DOI, 저자 소속
 - Title: Current-Sensor-Less Condition Monitoring of a DC-Link Capacitor Based on Analysis of a Six-Pulse Diode Rectifier Having AC and DC Inductors
-- Authors: K. Hasegawa, Y. Hirose
-- Year: 2024
-- Journal: IEEE Transactions on Industry Applications, vol. 60, no. 6, pp. 9043–9051 (Nov./Dec. 2024)
-- DOI: (확인 필요) — Kyutech 교원 목록·리포지터리에서 권/호/쪽만 확인, IEEE 페이지 미열람
-- Publication Type: Journal (ECCE 2023 학회판의 저널 확장)
-- 식별/출처: Kyutech repository (kyutech.repo.nii.ac.jp), 교원 업적 DB hyokadb02; 학회판 ECCE 2023
-- 저자 소속: Kyushu Institute of Technology (Hasegawa 연구실). First author Hasegawa.
+- Authors: Kazunori Hasegawa (Member, IEEE; corresponding), Yuto Hirose (현 Chugoku Electric Power Co.)
+- Year / Journal: IEEE Transactions on Industry Applications, vol. 60, no. 6, pp. 9043–9051, Nov./Dec. 2024 (received 8 Feb 2024, accepted 15 Jul 2024, published 15 Aug 2024; paper 2024-IPCC-0225.R1, ECCE 2023 발표판 [26] 확장)
+- DOI: 10.1109/TIA.2024.3443784
+- 소속: Dept. of Electrical and Electronic Engineering, Kyushu Institute of Technology, Kitakyushu, Fukuoka 804-8550, Japan. 지원: NEDO JPNP20004.
 
-### [2] Converter / Inverter Topology
-- Topology: 6-pulse 다이오드 정류기(AC 라인 인덕터 + DC 인덕터) + 3상 PWM 인버터 — 정류기-인버터 드라이브(보조 범위; 인버터부는 3상 PWM 인버터 = 2L 로 추정).
-- Power rating: NR (2025 MR 후속: 1.5 kW) / DC-link voltage: 200 V 급 실험 시스템(초록 '200-V laboratory system') / AC output voltage: Not reported / Full text verification required
-- Switching frequency: Not reported / Full text verification required / Fundamental frequency: Not reported / Full text verification required / Modulation: Not reported / Full text verification required / Load·motor: Not reported / Full text verification required
+### 2. 정확한 inverter topology
+- **6-pulse 다이오드 정류기(AC 라인 인덕터 L_ac + DC 인덕터 L_dc) + 3상 2-Level PWM 인버터**(Fig. 1: 레그당 스위치 2개, IGBT) + 3상 RL 부하. 회생 제동 없는 범용 모터 드라이브 구조를 대상으로 함.
 
-### [3] Classification vs Regression
-- Task: **Regression (C+ESR)**
-- C 와 ESR 변화를 모두 관측·추정(초록 'both ESR and capacitance changes were observed').
-- Output 단위: C, ESR (단위 NR)
-
-해당 없음(회귀/연속 지표) 또는 클래스 정의 NR.
-
-### [4] 커패시터 기본 정보
-| 항목 | 값 |
+### 3. Power rating, DC-link voltage, switching frequency, load/motor, modulation
+| 항목 | 값 (Table I) |
 |---|---|
-| Technology | Not reported / Full text verification required (전해 추정 — 리플 전류 해석 대상) |
-| Manufacturer | Not reported / Full text verification required |
-| Model | Not reported / Full text verification required |
-| Rated C | Not reported / Full text verification required |
-| Rated V | Not reported / Full text verification required |
-| Rated ESR | Not reported / Full text verification required |
-| Temperature rating | Not reported / Full text verification required |
+| Power rating P | 1.2 kW |
+| AC 전원 전압 V_S | 200 V, f_S 60 Hz |
+| DC-link 전압 V_dc | 270 V (Fig. 6 계산 조건) |
+| DC 인덕터 L_dc | 0 ~ 8.2 mH (0 ~ 9.2 %) |
+| AC 라인 인덕터 L_ac | 4.6 ~ 8.2 mH (5.2 ~ 9.2 %) |
+| 캐리어(스위칭) 주파수 f_C | 10 kHz |
+| 출력 주파수 f_O | 50 Hz |
+| 부하 | 3상 RL 부하(값 NR; 모터 아님) |
+| 변조 | PWM (방식 NR; 저주파 리플 조건 6f_S ≠ 2f_I, 12f_S ≠ 2f_I 식 (14)) |
+| 출력 전력 | 1200 W 및 600 W (50 %) |
 
-### [5] 노화 모사 방식
-- NR (실험에서 C·ESR 변화를 '관측' 했다고만 초록에 기재 — 커패시터 교체/저항 추가 여부 미확인)
+### 4. Capacitor 종류, 정격 C, 정격 전압, ESR
+- 종류: **알루미늄 전해 커패시터**(모든 조건). 공칭 C = **1100 µF 또는 1000 µF**(Table I), 단위용량상수 H = 33 ms(1100 µF)/30 ms(1000 µF). 정격 전압·정격 ESR·제조사 NR. 초기 측정값(조건 A): 1015 µF / 45 mΩ (제안법 기준 Z_C(measurement)).
 
-### [6] Aging Sample 파라미터
-| Sample | Health State | C | C Change | ESR | ESR Change |
-|---|---|---:|---:|---:|---:|
-| — | Not reported / Full text verification required | Not reported / Full text verification required | Not reported / Full text verification required | Not reported / Full text verification required | Not reported / Full text verification required |
+### 5. 진단 task: classification / regression
+- **Regression**: C 와 ESR(R_S) 을 연속 추정.
 
-논문에 나온 값이 스니펫·초록에 없어 표를 채우지 않았다(추정 금지 규칙).
-- Radd (ESR 모사 직렬 저항): Not reported / Full text verification required
+### 6. Classification 이면 class 수와 정의
+- 해당 없음(분류 아님).
 
-### [7] C / ESR 변화 여부
-- **C + ESR (둘 다 변화를 관측했으나 동시/개별 여부 NR)**
+### 7. Regression 이면 추정 대상(C / ESR / SOH)
+- **C [µF] + ESR [mΩ] 동시** (6차·12차 고조파 임피던스 2개 연립, 식 (20)–(23)).
 
-### [8] Dataset 구성
-- 해당 없음(모델 기반)
+### 8. 노화 구현: 실제 aging / parameter emulation / simulation
+- **Parameter emulation**: 조건 A C=1100 µF / B 1100 µF + 직렬 150 mΩ / C 1000 µF / D 1000 µF + 직렬 150 mΩ (4.B절). 실제 가속 노화 없음(저자 이전 연구 [16] 인용만).
 
-### [9] 사용 신호
-- 신호: 3상 AC 전원 전압, AC 라인 인덕터·DC 인덕터 값(파라미터), 인버터 출력 전력 → 커패시터 전류 계산; DC-link 전압(리플). 전류 센서 미사용.
-- Sampling frequency: Not reported / Full text verification required
+### 9. Aging sample 별 실제 capacitance
+- 공칭: A 1100, B 1100, C 1000, D 1000 µF. 제안법 추정(Table II, L_ac 4.6 mH/L_dc 8.2 mH 케이스 3): A 1015, B 992, C 917, D 919 µF. 케이스별 전체 값은 아래 표.
 
-### [10] 센서 구성
-- Existing inverter sensor only?: **Yes — 전류 센서 자체를 쓰지 않음(초록). 전원 전압 측정이 필요하므로 '인버터 기존 센서' 관점에서는 전원 전압 센서 유무에 따라 Partially 가 될 수 있음(해석).**
-- 추가 센서: None (전류 센서 없음; 전원 전압 센서는 드라이브 구성에 따라 다름)
-- Derived / reconstructed: Yes — 정류기 해석 모델(전원 전압 + 인덕터 + 출력 전력)로 커패시터 전류를 계산.
+### 10. Aging sample 별 실제 ESR
+- 공칭 ESR NR(초기 추정 45 mΩ). 추정(케이스 3): A 45, B 155, C 37, D 179 mΩ. 모든 케이스 값은 아래 표.
 
-### [11] 전처리 및 Feature Extraction
-- 전처리: 정류 리플(6f1 계열) 성분 해석 — FFT 여부 NR(관련 2019 IEEJ·2024 학회판은 FFT 사용)
-- Feature: 정류 리플 전류·전압 성분 → ESR, C
+### 11. External resistor Radd 값
+- **Radd = 150 mΩ** (조건 B, D).
 
-### [12] 진단 기법
-- Analytical: 6-pulse 정류기 리플 전류 모델 → 커패시터 전류 계산 → 리플 전압과의 관계로 ESR·C 산출.
-- Hyperparameter: 해당 없음
+### 12. C only / ESR only / C+ESR simultaneous
+- **C + ESR simultaneous** — 2 C 수준 × 2 ESR 수준의 4 조합(조건 D 가 동시 변화).
 
-### [13] AI 모델 입력·출력
-AI 모델 아님(분석적/모델 기반 방법).
+### 13. 총 dataset sample 수
+- 모델 기반; 측정 조건 = 4 커패시터 조건 × 4 인덕터 조합(Table II) + 출력 전력 2 수준(Table III) = 20 측정점.
 
-### [14] 저자 주장 Contribution vs 내 해석
-Authors' claimed contributions (초록·스니펫에서 확인된 범위):
-- 전류 센서 없이 DC-link 커패시터 CM(제목·초록)
-- AC·DC 인덕터를 모두 가진 6-pulse 정류기 해석으로 커패시터 전류 계산(초록)
-- 200 V 실험으로 ESR·C 변화 모두 관측(초록)
+### 14. Class 별 sample 수
+Not reported (원문에 없음) (분류 아님)
 
-My interpretation:
-'커패시터 전류를 측정하지 않고 계산한다' 는 점에서 내 재구성 접근과 같은 철학이지만, 정보원이 인버터 스위칭이 아니라 정류기 리플이다. 정류기 전단 드라이브에서는 이 방법이 가장 단순하고, 인버터 측 재구성과 결합하면 C·ESR 를 두 대역에서 교차 검증할 수 있다(해석).
+### 15. Train / validation / test split
+Not reported (원문에 없음) (학습 없음)
 
-### [15] On-board / Online 여부
-- Diagnosis Type: **True Online** — 정상 운전 중 고유 정류 리플을 이용, 주입 없음(초록).
-- On-board implementation: 본 논문 NR. 같은 그룹의 2024 학회판·2025 MR 논문은 'Leafony' 소형 MCU 에서 FFT 로 ESR 감시(스니펫; 2025 MR 판 귀속은 확인 필요).
+### 16. Operating condition 종류
+- 인덕터 조합 4종: 1) L_ac 4.6 mH, L_dc 0 / 2) 4.6, 4.6 / 3) 4.6, 8.2 / 4) 8.2, 4.6 mH.
+- 출력 전력 P_O = 1200 W, 600 W (Table III). 연속 도통 조건 I_d ≥ I_C(6ω) 필요(Fig. 8: 약 150 W 이상에서 연속).
+- 온도·속도·변조지수 변화 없음.
 
-### [16] On-board Hardware Environment
-| 항목 | 값 |
-|---|---|
-| DSP | Not reported / Full text verification required |
-| MCU | Leafony 소형 MCU (학회판/후속 논문; 본 논문 귀속 NR) |
-| FPGA | Not reported / Full text verification required |
-| Sampling ADC | Not reported / Full text verification required |
-| Memory | Not reported / Full text verification required |
-| Sampling frequency | Not reported / Full text verification required |
-| Control frequency | Not reported / Full text verification required |
-| Execution time | Not reported / Full text verification required |
-| Inference time / model size | 해당 없음 |
+### 17. 실제 측정 신호
+- **커패시터 전압 v_C 만 측정**(DC 블록 필터 → FFT → V_C6, V_C12). 커패시터 전류는 측정하지 않고 V_S, L_ac, L_dc, P_O 로 계산(식 (6)–(16)). P_O 는 인버터 출력 전류 센서(제어용)로 얻는 것으로 가정.
 
-### [17] Real-time 가능성
-- **Real-time feasible (후속 논문에서 MCU 구현 시사)** — FFT 한 번과 대수 계산으로 구성되어 소형 MCU 에서도 가능함을 같은 그룹이 보였다(스니펫).
+### 18. 기존 inverter sensor 인지 추가 sensor 인지
+- **기존 센서만**: 전압 센서(v_C) + 출력 전력용 기존 출력 전류 센서. 전류 센서 추가 없음. 전원 전압 V_S 와 인덕터 값은 파라미터로 알고 있어야 함.
 
-### [18] 실험 환경
-| Parameter | Value |
-|---|---|
-| DC-Link Voltage | 200 V 급 |
-| Output Voltage | Not reported / Full text verification required |
-| Power | NR (후속 1.5 kW) |
-| Load | Not reported / Full text verification required |
-| Motor | Not reported / Full text verification required |
-| Motor speed | Not reported / Full text verification required |
-| Torque | Not reported / Full text verification required |
-| Switching Frequency | Not reported / Full text verification required |
-| Fundamental Frequency | Not reported / Full text verification required |
-| Modulation | Not reported / Full text verification required |
-| Capacitor | Not reported / Full text verification required |
-| Sampling Frequency | Not reported / Full text verification required |
+### 19. 직접 측정 신호 vs reconstructed signal
+- 직접 측정: v_C (DC 블록 필터 후 리플 ṽ_C).
+- 계산(재구성): I_C6, I_C12 = v_Rm/(Z_om + Z_m) (식 (12)(13)), Z_om = j(2 − 3u/2π) mωL_ac, Z_m = jmωL_dc, 겹침각 u = arccos(1 − 2ωL_ac I_d/(√3 V_Sm)), I_d = P_O/V_dc. 임피던스 보정 Ẑ_C = G_comp Z_C, G_comp = Z_C/Z_C(measurement) (식 (18)(19)).
 
-### [19] Operating Condition 다양성
-- NR (본 논문). 후속 2025 MR: 전원 전압 불평형 ≈5 % 까지 유효.
+### 20. Sampling frequency
+Not reported (원문에 없음) (FFT 는 오실로스코프 파형을 Microsoft Excel 로 오프라인 계산)
 
-### [20] 최종 성능
-- 종합: Not reported / Full text verification required (초록은 '변화를 관측' 으로만 기술)
-- C error: Not reported / Full text verification required / ESR error: Not reported / Full text verification required / Classification metrics: 해당 없음
+### 21. Window length / sample length
+Not reported (원문에 없음)
 
-### [21] Noise / Robustness
-- 후속 2025 MR 에서 전원 불평형 강건성 다룸. 부하·온도 NR.
+### 22. 전처리 (normalization / filtering / segmentation / phase alignment)
+- DC 블록 필터(DC 제거) → 이동평균 필터(차단 1300 Hz) 로 스위칭 리플 제거 → FFT. 정규화·세그먼트 언급 없음. 초기 임피던스 보정 G_comp(LCR 사전 측정 또는 초기 운전값).
 
-### [22] 장점
-- 전류 센서 완전 배제 → 비용·설치 최소
-- C 와 ESR 동시
-- True Online
-- 소형 MCU 구현 계열(후속)
+### 23. Feature extraction (FFT / PSD / harmonic / STFT / Wavelet)
+- FFT 로 360 Hz(6f_S)·720 Hz(12f_S) 성분 V_C6, V_C12 추출 → Z_C(6ω), Z_C(12ω) = V/I.
 
-### [23] 한계
-Authors' stated limitation:
-- Not reported / Full text verification required
+### 24. 모델 또는 parameter estimation algorithm
+- 해석적 연립: Ẑ_C(6ω)² = (1/(6ωC))² + R_S², Ẑ_C(12ω)² = (1/(12ωC))² + R_S² → R_S = sqrt(4/3 Ẑ_C²(12ω) − 1/3 Ẑ_C²(6ω)) (22), C = 1/(2√2 ω) · 1/sqrt(Ẑ_C²(6ω) − Ẑ_C²(12ω)) (23). 전해 커패시터 ESR 의 주파수 의존(6차 vs 12차)은 구분 못 하고 평균값 — 향후 과제.
 
-Additional limitation identified (분석자):
-- 정류기 전단(다이오드) 드라이브에 한정 — AFE·PV·배터리 입력 2L 인버터에는 적용 불가(추론)
-- 인버터 출력 전력·인덕터 값 등 파라미터 의존 → 파라미터 오차가 추정 오차로 전파(추론)
-- 오차 수치·노화 샘플 미확인
+### 25. AI: network architecture, input size, output, loss, optimizer
+- 해당 없음.
 
-### [24] 내 연구 목표와의 관련성
-- **High** — 방법 철학(센서 없는 커패시터 전류 계산, C+ESR 동시)은 매우 유용하나, 정보원이 정류 리플이라 내 '인버터 신호' 목표와 다르다.
+### 26. 저자가 직접 주장하는 contribution / novelty
+Authors' claimed contributions:
+1. AC 라인 인덕터와 DC 인덕터를 **모두** 가진 6-pulse 다이오드 정류기의 리플 전류 해석을 CM 에 도입(선행 [18] 은 DC 인덕터만).
+2. 그 고조파 성분으로 **전류 센서 없이 ESR 과 C 를 모두** 감시.
+3. 200 V·1.2 kW 실험에서 L_ac, L_dc, 출력 전력을 바꿔도 ESR·C 변화 관측 확인(결론).
+4. 수백 W ~ 수백 kW 의 6-pulse 정류기 인버터에 적용 가능하다고 주장(3.D절).
 
-### [25] 내 연구와의 비교
-| Item | Paper | My Target |
-|---|---|---|
-| Topology | 다이오드 정류기 + 3상 PWM 인버터 | 2-Level 3-Phase |
-| Capacitor | DC-link | DC-Link |
-| Signal | 전원 전압 + 출력 전력 + vdc (전류 센서 없음) | Existing inverter signal preferred |
-| Aging Target | C + ESR | C / ESR |
-| Diagnosis | Regression | Classification or Regression |
-| Online | Yes (True Online) | Yes |
-| On-board | 후속 MCU | Yes |
-| Extra Sensor | No | Preferably No |
-| AI | No | Candidate |
-| Real-time | 후속에서 시연 시사 | Required |
+### 27. True Online / Quasi-Online / Offline
+- **True Online**: 정상 운전 중 정류기 고유 리플 사용, 주입·정지 없음. 전제: 연속 도통(I_d ≥ I_C(6ω)), 6f_S·12f_S 가 2f_I 와 다를 것, P_O·V_S·인덕터 값 기지.
 
-### [26] 재현 가능성
-- **Moderate** — 정류기 리플 모델은 Simulink 로 재현 가능. 인덕터 값·출력 전력 추정 방법이 본문에만 있음.
-- MATLAB/Simulink + 실험 인버터 기준 준비물: 저장 신호: 전원 3상 전압, vdc, (검증) iC, 출력 전력(상전류·전압). 변화 파라미터: C, ESR 각 3–5 단계, 부하 3단계, 전원 불평형. 데이터셋: 조합별 정류 리플 성분.
+### 28. 실제 on-board 구현 여부
+- **No**: FFT 를 Microsoft Excel 로 오프라인 계산(3.D절). 저자는 Arduino 급 저가 보드에서 수십 ms FFT 로 충분하다고 언급(구현 아님).
 
-### 선정 점수 (10 기준 × 10점)
-| c1 7 | c2 10 | c3 9 | c4 10 | c5 10 | c6 10 | c7 3 | c8 8 | c9 3 | c10 6 | **Total 76** |
-|---|---|---|---|---|---|---|---|---|---|---|
+### 29. DSP / MCU / FPGA 모델
+Not reported (원문에 없음) (인버터 제어기 모델 미기재)
 
-### 읽기 포인트
-- 왜 읽어야 하는가: 전류 센서 없이 C+ESR 를 동시에 추정한 IEEE TIA 최신 논문. '측정 대신 계산' 의 오차 처리 방식을 배울 수 있다.
-- 집중할 Figure/Table/Equation: 커패시터 전류 계산식(전원 전압·인덕터·출력 전력), ESR/C 산출식, 200 V 실험 셋업 표, C·ESR 변화 관측 그림
-- 동반·후속 논문: K. Hasegawa, T. Kubo, Y. Hirose, IEEJ J. Ind. Appl. 2023 (DC 인덕터만); Yamasoto & Hasegawa, Microelectronics Reliability 173:115873, 2025, DOI 10.1016/j.microrel.2025.115873 (200 V 1.5 kW, 불평형 ≈5 %); Hasegawa, Nishizawa, Omura, Microelectron. Reliab. 88–90:433–437, 2018.
+### 30. Control frequency / inference time / execution time / memory
+- NR. (Arduino FFT 수십 ms 가능성만 언급; 노화는 1000 h 단위로 진행하므로 충분하다는 논리)
+
+### 31. Classification accuracy 또는 regression error
+- 정량 오차 표 없음. Table II·III 의 추정값 vs 공칭: C 1000 µF 조건에서 904–941 µF(−6 ~ −10 %), 1100 µF 에서 992–1055 µF(조건 A 는 보정 기준이라 1015 고정); Radd 150 mΩ 추가 시 ESR 155–215 mΩ(+110 ~ +170 mΩ). 저자: 전류 센서 방식보다 정확도가 다소 낮을 수 있음, 전압 양자화 오차가 원인(오차 전파 이론 [22]).
+
+### 32. Load / speed / temperature / modulation 변화 robustness
+- L_ac(4.6→8.2 mH), L_dc(0→8.2 mH), P_O(1200→600 W) 변화에서도 ESR·C 변화 추적(Table II, III). 600 W 에서 B 조건 C 가 1055 µF 로 과대(공칭 1100)·C 조건 ESR 97 mΩ(1200 W 에서 37) 등 **운전점에 따른 편차 존재**(원문 수치). 온도·속도·변조 변화 없음.
+
+### 33. 저자가 인정한 limitation
+- 정확도가 전류 센서 기반 방법보다 낮을 수 있음; 커패시터 전압 양자화 오차 → 전압 센싱 분해능(비트 수) 향상 필요(4.C절).
+- ESR 의 6차/12차 주파수 의존을 구분 못 함(2.C절, 향후 과제).
+- 연속 도통 모드에서만 유효(식 (17)); 저주파 인버터 리플이 6f_S/12f_S 와 겹치면 무효(식 (14)).
+
+### 34. 내가 보는 추가 limitation
+- 다이오드 정류기 전단에만 적용(AFE·배터리·PV 입력 2L 인버터 불가) → 내 '인버터 신호' 목표와 정보원이 다름.
+- 전원 전압·인덕터 값·출력 전력이 모델 입력 → 파라미터 오차·전원 불평형(후속 2025 MR 에서 다룸)에 민감.
+- 초기 보정 G_comp 가 조건 A 를 기준으로 하므로 절대 정확도가 아니라 '변화 추적' 에 가까움.
+- 오프라인 Excel FFT, 샘플링·창 길이 미기재 → 실시간 구현 미검증. 모터 대신 RL 부하.
+
+### 35. MATLAB/Simulink 재현에 필요한 신호와 parameter
+- 모델: 3상 200 V/60 Hz 전원 + L_ac(4.6–8.2 mH) + 6-pulse 다이오드 + L_dc(0–8.2 mH) + C(1000/1100 µF, R_S) + 2L 인버터(10 kHz, 50 Hz 출력) + RL 부하(1200/600 W). 로그: v_C, (검증) i_C, i_R, 출력 전류·전압(P_O).
+- 구현: DC 블록 → 1300 Hz 이동평균 → FFT 360/720 Hz → 식 (6)–(16) 으로 I_C6, I_C12 → 식 (22)(23). 스윕: C 1100/1000, R_add 0/150 mΩ, L_ac, L_dc, P_O; 추가로 전원 불평형.
+
+### 36. 실험 장치 구현에 필요한 sensor 와 hardware
+- 센서: 커패시터 전압 센서(고분해능 ADC 권장), 기존 출력 전류 센서(P_O 계산), 전원 전압 정보(V_S 공칭값 사용 가능). 전류 센서 불필요.
+- 하드웨어: DC 블록 필터 회로, L_ac/L_dc 인덕터, 직렬 저항 150 mΩ, 가변 RL 부하, FFT 가능한 MCU(Arduino 급 이상).
+
+### Aging Sample 표 (원문 값만)
+| Aging Sample | C | C Change | ESR | ESR Change | Operating Condition | Label |
+|---|---:|---:|---:|---:|---|---|
+| A (1100 µF, Radd 0) | 1100 µF 공칭 / 추정 1015 µF (모든 케이스, 보정 기준) | 기준 | 추정 45 mΩ | 기준 | L_ac/L_dc 4종, P_O 1200/600 W | C+ESR 추정 |
+| B (1100 µF + 150 mΩ) | 추정 1019 / 995 / 992 / 993 µF (케이스 1–4); 600 W: 1055 µF | ≈0 (공칭) | 추정 186 / 163 / 155 / 170 mΩ; 600 W: 215 mΩ | +150 mΩ (Radd) | 〃 | ESR 증가 추적 |
+| C (1000 µF, Radd 0) | 추정 918 / 927 / 917 / 908 µF; 600 W: 935 µF | −9.1 % (공칭) | 추정 39 / 64 / 37 / 43 mΩ; 600 W: 97 mΩ | 0 (공칭) | 〃 | C 감소 추적 |
+| D (1000 µF + 150 mΩ) | 추정 932 / 940 / 919 / 904 µF; 600 W: 941 µF | −9.1 % (공칭) | 추정 199 / 210 / 179 / 171 mΩ; 600 W: 208 mΩ | +150 mΩ (Radd) | 〃 | C↓ + ESR↑ 동시 |
+Table II(케이스 1: L_ac 4.6/L_dc 0, 2: 4.6/4.6, 3: 4.6/8.2, 4: 8.2/4.6 mH, P_O 1200 W)·Table III(케이스 3, P_O 600 W) 원문 값. 'C Change' 는 공칭 기준 분석자 계산.
+
+### 원문 수식 요약 (재현용)
+- (5) Z_C(ω_k) = V_C(ω_k)/I_C(ω_k) = sqrt((1/(ω_k C))² + R_S²)
+- (6) Z_om = j(2 − 3u/2π) mωL_ac ; (7) Z_m = jmωL_dc ; m = 6, 12, … ; (9)–(11) v_Rm = A_Rm cos mθ + B_Rm sin mθ (겹침각 u 포함 계수) ; (12)(13) i_Cm = i_Rm = v_Rm/(Z_om + Z_m)
+- (15) u = arccos(1 − 2ωL_ac I_d/(√3 V_Sm)) ; (16) I_d = P_O/V_dc ; (17) 연속 도통: I_d ≥ I_C(6ω)
+- (18)(19) Ẑ_C = G_comp Z_C, G_comp = Z_C/Z_C(measurement)
+- (22) R_S = sqrt(4/3 Ẑ_C²(12ω) − 1/3 Ẑ_C²(6ω)) ; (23) C = 1/(2√2) · 1/ω · 1/sqrt(Ẑ_C²(6ω) − Ẑ_C²(12ω))
 
 ---
-
-(본 파일은 `2level_inverter_dc_link_capacitor_onboard_top10.md` 7절과 동일 내용. 본문 확보 후 `Not reported / Full text verification required` 항목을 채워 갱신한다.)
+(이 파일은 `2level_top5_fulltext_comparison.md` 와 같은 원문 분석에서 생성됨. 이전 Abstract-level 워크시트의 선정 점수·Tier 는 `2level_inverter_dc_link_capacitor_onboard_top10.md` 5절 참조.)

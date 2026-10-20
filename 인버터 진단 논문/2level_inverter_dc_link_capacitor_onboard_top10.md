@@ -3,6 +3,7 @@
 - 작성일: 2026-10-20
 - 목표: 2-Level 3상 인버터에서 측정 가능한(가능하면 기존) 신호로 DC-link 커패시터 노화(C 감소·ESR 증가)를 On-board/Online 으로 진단하는 시스템 설계를 위한 핵심 문헌 10편 정밀 비교.
 - 수행: Harness Skill `literature-researcher → bibliographic-verifier → capacitor-aging-expert → paper-analyzer → paper-comparator`. 탐색은 4개 병렬 스카우트(ML/DL 분류·회귀 / 해석적 True-Online / 드라이브·EV·PV 응용 / 상세 수치 채굴)로 수행(웹 검색 160회).
+- **2026-10-20 원문 갱신**: Rank 1·2·3·4·6(Ghadrdan, Örüklü, Lipnicki, Hasegawa, Park & Kwak)은 PDF 원문 36항목 분석으로 `core_papers/2level_top10/` 파일과 `2level_top5_fulltext_comparison.md` 에 갱신됨. 이 문서 7절의 해당 5편 내용은 Abstract-level 당시 기록이며, 원문과 다른 점(Örüklü 는 단상 출력 인버터, Ghadrdan 실험은 i_inv 센서 측정, Park & Kwak 는 i_C 센서 사용 등)은 비교 문서 1절 표를 우선한다.
 - 파일: `2level_inverter_dc_link_capacitor_onboard_top10.md`(이 문서), `2level_inverter_dc_link_capacitor_onboard_top10.csv`(UTF-8 BOM), `core_papers/2level_top10/01_…10_….md`(논문별 분석).
 
 ---

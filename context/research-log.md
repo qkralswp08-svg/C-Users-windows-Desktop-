@@ -39,3 +39,10 @@
 - 한계: 출판사·리포지터리 호스트 차단으로 **전 논문 Abstract-level only**. 샘플별 C/ESR·Radd·클래스별 C/ESR·데이터셋 분할·DSP/MCU 부품·샘플링·추론 시간은 10편 모두 스니펫에 없음(예외: Liao 7500 µF·90/80 % 구간, Al-Wesabi 오차 수치) → 전부 `Not reported / Full text verification required`. Örüklü 의 '<2 %·GPR·다중 조건' 은 2026 TPEL 후속 귀속 가능, Machines 2022 저자·Hasegawa 2024 DOI·Al-Wesabi DOI 미확인
 - 핵심 발견: 2L 계열 True Online 은 "상전류 기반 재구성/feature" 와 "vdc 단독" 두 흐름; C+ESR 동시는 Hasegawa(정류 리플)·Park & Kwak(DL)뿐이며 인버터 스위칭 신호 기반 동시 추정 저널 0편; 분류 저널은 Liao 1편(3 구간); AI 의 DSP/MCU 추론 시연 저널 0편 → 내 연구 차별점 = 재구성 전류 스펙트럼 빈 → C·ESR 동시 회귀/등급 + 다중 운전조건 + on-board 추론
 - 다음: (1) 로컬에서 Search-Papers.ps1 로 부록 A 서지 확인 (2) OA 본문 확보(Zhao 2023 VBN, Lipnicki PDF, Machines, Al-Wesabi, Liao, Amaral) → core_papers 워크시트 NR 채우기 (3) 20절 설계안대로 MATLAB C×ESR 격자 + Radd 실험 계획 수립
+
+## 2026-10-20 — 2-Level Top 10 중 핵심 5편 PDF 원문 정밀 분석
+- 요청: 사용자가 제공한 PDF(Ghadrdan 2022 TPEL, Lipnicki 2017 PED, Hasegawa & Hirose 2024 TIA, Örüklü & Ağalar 2025 TIE, Park & Kwak 2023 JEET)를 원문 기준으로 36항목(서지·토폴로지·정격·커패시터·task·노화 모사·샘플별 C/ESR·Radd·데이터셋·신호·센서·재구성·샘플링·전처리·feature·알고리즘·AI 구조·contribution·online 유형·on-board·HW·성능·강건성·한계·재현 조건) 추출, 5편 비교표, 연구 방향 A/B/C 비교
+- Skill: paper-analyzer → capacitor-aging-expert → paper-comparator → paper-code-bridge(재현 조건)
+- 결과: `인버터 진단 논문/core_papers/2level_top10/01,02,03,04,06_*.md` 를 원문 기준으로 갱신(Evidence: Full text), `인버터 진단 논문/2level_top5_fulltext_comparison.md` 신규. 원문 확인으로 바뀐 사실: Ghadrdan Radd 0/0.1/0.22/0.34 Ω × C 5단계 20세트·실험은 i_inv 센서 측정·FFT 는 PC; Lipnicki Radd 0/0.02/0.03/0.11/0.42 Ω·최대 오차 11 %·영벡터 트리거 시간영역; Hasegawa C 1100/1000 µF × Radd 150 mΩ·360/720 Hz 2주파수 연립·Excel 오프라인; Örüklü 단상 H-bridge 출력·GPR·975/175 샘플·MPE <1 %·50 kHz 2500점; Park & Kwak i_C 센서 사용·병렬 25쌍 122–650 µF·오차표 공개·샘플링/구조 NR
+- 판단: 추천 1순위 = A+B 하이브리드(상전류+스위칭 상태 재구성 전류의 fsw/측대파/저주파 Goertzel 빈 + vdc fsw 빈 → 2주파수 임피던스 연립으로 C·ESR 초기 추정 + 운전점 변수 GPR/소형 DNN 보정, DSP 구현), 2순위 = 같은 데이터셋으로 경량 1D-CNN/DNN 회귀·3등급 분류 + MCU 추론 시간 보고; B 단독은 Örüklü 2025 와 중복
+- 다음: Simulink 모델(정류기 유무 2종)로 재구성 전류 vs 측정 i_C 스펙트럼 비교(Ghadrdan Fig. 9 재현) → C 5 × Radd 4 × 운전점 데이터셋 설계서 → 나머지 Top 10 PDF 확보 시 동일 36항목 갱신

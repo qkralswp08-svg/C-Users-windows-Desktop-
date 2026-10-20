@@ -1,176 +1,154 @@
 # 03. DC Link Condition Monitoring Method for Two-Level AC/DC/AC Converters
+> Tier S · Rank 3 · **Evidence: Full text (PDF 원문 전체 확인, 2026-10-20)** — 이 파일은 2026-10-20 PDF 원문 36항목 분석으로 갱신됨(이전 Abstract-level 내용 대체). 수치는 원문 표·본문에 적힌 값만 기재했고, 없는 항목은 `Not reported (원문에 없음)`.
 
-> Tier S · Rank 3 · Score 72/100 · **Evidence: Abstract-level only** (본문 미열람; 아래 `Not reported / Full text verification required` 항목은 추측으로 채우지 않았다)
-
-### [1] 기본 논문 정보
+### 1. 정확한 제목, 저자, 연도, 저널, DOI, 저자 소속
 - Title: DC Link Condition Monitoring Method for Two-Level AC/DC/AC Converters
-- Authors: P. Lipnicki, D. Lewandowski
-- Year: 2017
-- Journal: Power Electronics and Drives (Sciendo / Wrocław Univ. of Science and Technology), vol. 2(37), no. 1, pp. 43–56 (online 27 Oct 2017)
+- Authors: Piotr Lipnicki, Daniel Lewandowski (연락: piotr.lipnicki@pl.abb.com)
+- Year / Journal: Power Electronics and Drives, vol. 2(37), no. 1, pp. 43–56, 2017 (manuscript received 3 Oct 2016, accepted 2 Feb 2017)
 - DOI: 10.5277/PED170107
-- Publication Type: Journal (국내·중소 저널급; IEEE/IET 아님)
-- 식별/출처: ped.pwr.edu.pl 68776; sciendo.com/article/10.5277/ped170107; RG 334696403; 공개 PDF yadda.icm.edu.pl (PED_1_2017_Lipnicki.pdf) — 본 환경에서 열지 못함
-- 저자 소속: ABB Corporate Research Center, Kraków (스니펫 기준)
+- 소속: ABB Sp. z o.o., Corporate Research Center, Starowiślna 13a, 31-038 Kraków, Poland. 관련 특허 WO2015165574 (A1) [10].
 
-### [2] Converter / Inverter Topology
-- Topology: 2-Level AC/DC/AC 컨버터(제목에 명시). 정격 NR.
-- Power rating: Not reported / Full text verification required / DC-link voltage: Not reported / Full text verification required / AC output voltage: Not reported / Full text verification required
-- Switching frequency: Not reported / Full text verification required / Fundamental frequency: Not reported / Full text verification required / Modulation: Not reported / Full text verification required / Load·motor: Not reported / Full text verification required
+### 2. 정확한 inverter topology
+- **2-Level AC/DC/AC** 컨버터(제목). 시뮬레이션: 15 kV 계통 → 결합 변압기 → **능동 정류 유닛(IGBT) + DC-link + 인버터 유닛** → 부하(견인 컨버터 예시, Fig. 3/5; DC choke 2개 포함). 다이오드 정류기 변형도 2.3절에서 다룸(계통 각도로 다이오드 도통 상태 결정, Table 1).
+- 실험: 드라이브 + 유도전동기(IM) 부하 시험 리그(Fig. 7, 8). 정류단 종류(실험) 명시 없음.
 
-### [3] Classification vs Regression
-- Task: **Regression (ESR)**
-- ESR 온라인 추정; ESR 증가 추세를 고장 지표로 사용(인용 논문 문구).
-- Output 단위: ESR (Ω 또는 상대값 — NR)
+### 3. Power rating, DC-link voltage, switching frequency, load/motor, modulation
+- Power rating: NR (시뮬: 15 kV 계통 연결 full-scale 견인 컨버터; 실험 리그 정격 NR)
+- DC-link 전압: NR / 스위칭 주파수: NR / 변조: NR (제어는 동기 좌표계 PI; FOC/scalar/DTC 어느 것이든 스위칭 신호만 있으면 됨)
+- 부하: 시뮬 — 정격 전류의 30 % 부하; 실험 — 유도전동기(정격 NR).
 
-해당 없음(회귀/연속 지표) 또는 클래스 정의 NR.
+### 4. Capacitor 종류, 정격 C, 정격 전압, ESR
+- 종류: 전해 커패시터(본문 'electrolytic' 문맥) — 정격 C, 정격 전압, 정격 ESR 모두 NR.
+- 실험 기준 ESR(ESR₁, 저항 미추가) 추정값 **0.15 Ω**. 수명 기준: 용량 75 % 이하이면 수명 종료([8] 인용).
 
-### [4] 커패시터 기본 정보
-| 항목 | 값 |
-|---|---|
-| Technology | Not reported / Full text verification required |
-| Manufacturer | Not reported / Full text verification required |
-| Model | Not reported / Full text verification required |
-| Rated C | Not reported / Full text verification required |
-| Rated V | Not reported / Full text verification required |
-| Rated ESR | Not reported / Full text verification required |
-| Temperature rating | Not reported / Full text verification required |
+### 5. 진단 task: classification / regression
+- **Regression (ESR 연속 추정)** + 임계 판정: C < k_p·C_init 이면 알람·정지 명령(식 (9), k_p 는 사용자 임계).
 
-### [5] 노화 모사 방식
-- Not reported / Full text verification required (실험 여부·노화 모사 방식 모두 미확인)
+### 6. Classification 이면 class 수와 정의
+- 학습 분류 아님. 알람은 2 상태(정상 / 임계 초과).
 
-### [6] Aging Sample 파라미터
-| Sample | Health State | C | C Change | ESR | ESR Change |
-|---|---|---:|---:|---:|---:|
-| — | Not reported / Full text verification required | Not reported / Full text verification required | Not reported / Full text verification required | Not reported / Full text verification required | Not reported / Full text verification required |
+### 7. Regression 이면 추정 대상(C / ESR / SOH)
+- ESR(t) [Ω] (식 (7)) 와 이를 이용한 C(백분율, 식 (8)). 핵심 health indicator 는 **ESR 증가 추세**.
 
-논문에 나온 값이 스니펫·초록에 없어 표를 채우지 않았다(추정 금지 규칙).
-- Radd (ESR 모사 직렬 저항): Not reported / Full text verification required
+### 8. 노화 구현: 실제 aging / parameter emulation / simulation
+- **Parameter emulation**: 시뮬레이션에서는 ESR 을 시간 의존 식 (11) 로 모델링하고 '정해진 저항값을 커패시터에 직렬 추가' 하는 스텝 변화로 구현; 실험에서도 **DC-link 커패시턴스에 추가 저항을 직렬 연결**(4.2절). 실제 가속 노화 없음.
 
-### [7] C / ESR 변화 여부
-- **ESR only (추정 대상 기준; 실험에서 C 변경 여부 NR)**
+### 9. Aging sample 별 실제 capacitance
+- C 값 NR (C 는 바꾸지 않음; ESR 만 변화).
 
-### [8] Dataset 구성
-- 해당 없음(모델 기반)
+### 10. Aging sample 별 실제 ESR
+- Table 2(원문 표 제목 오기 'Table 1'): ESR₁ 추정 0.15 Ω(기준, 추가 0) / ESR₂ ca. 0.18 (기대 0.17) / ESR₃ ca. 0.185 (0.18) / ESR₄ ca. 0.23 (0.26) / ESR₅ ca. 0.52 (0.57).
 
-### [9] 사용 신호
-- 신호: DC-link 전압 측정 + DC-link 전류 재구성(초록). 이전 조사 스니펫: 상전류 + 각 레그 스위칭 함수로 DC-link 전류 재구성 — 본문 확인 필요.
-- Sampling frequency: Not reported / Full text verification required
+### 11. External resistor Radd 값
+- **Radd = 0, 0.02, 0.03, 0.11, 0.42 Ω** (Table 2 'Added resistance').
 
-### [10] 센서 구성
-- Existing inverter sensor only?: **Yes (초록: 'does not require any additional sensors')**
-- 추가 센서: None
-- Derived / reconstructed: Yes — DC-link(커패시터) 전류를 상전류·스위칭 함수로 재구성(초록 'DC-link current reconstruction').
+### 12. C only / ESR only / C+ESR simultaneous
+- **ESR only** (C 고정).
 
-### [11] 전처리 및 Feature Extraction
-- 전처리: Not reported / Full text verification required (리플 성분 추출 방법 미확인)
-- Feature: 재구성 전류와 vdc 리플의 관계 → ESR
+### 13. 총 dataset sample 수
+- 모델 기반, 데이터셋 없음. 실험 측정점 5개(ESR₁–ESR₅).
 
-### [12] 진단 기법
-- Analytical: vdc + 재구성 DC-link 전류 → ESR 추정(세부 추정기 NR).
-- Hyperparameter: 해당 없음
+### 14. Class 별 sample 수
+Not reported (원문에 없음) (분류 아님)
 
-### [13] AI 모델 입력·출력
-AI 모델 아님(분석적/모델 기반 방법).
+### 15. Train / validation / test split
+Not reported (원문에 없음) (학습 없음)
 
-### [14] 저자 주장 Contribution vs 내 해석
-Authors' claimed contributions (초록·스니펫에서 확인된 범위):
-- 2-Level AC/DC/AC 컨버터용 DC-link 상태 감시 방법 제안(제목)
-- 추가 센서 없이 vdc 측정 + DC-link 전류 재구성으로 온라인 ESR 추정(초록)
+### 16. Operating condition 종류
+- 시뮬: 정격 전류 30 % 단일 부하, ESR 스텝(Fig. 6, ESR 스텝 상승 8단계, 약 0.005→0.18 Ω — 범례 값은 원문 그림에서 정확히 판독되지 않아 수치 인용 보류).
+- 실험: 단일 운전점(부하·속도 변화 없음).
 
-My interpretation:
-산업계(ABB)가 2-Level 드라이브에서 '스위칭 함수 기반 전류 재구성 → ESR' 을 실제로 다룬 드문 공개 논문. 저널 등급은 낮지만 내 신호 생성 방식과 토폴로지가 정확히 일치한다(해석).
+### 17. 실제 측정 신호
+- DC-link 전압 U_DC(직접 측정, 전체 DC-link 양단), 3상 입력 전류 I_a, I_b, I_c(정류 유닛 측; '드라이브 앞 보호 릴레이에 이미 있는 측정' 으로 가정), 스위칭 신호 S_aREC…S_cINV(제어기 내부). Full-scale 구성에서는 인버터 측 상전류도 사용(식 (2), (10)).
 
-### [15] On-board / Online 여부
-- Diagnosis Type: **True Online** — 초록상 주입·시퀀스 언급 없음, 추가 센서 없음. 운전 조건 제약은 본문 확인 필요.
-- On-board implementation: Not reported / Full text verification required (ABB 연구소 논문이나 제어기 구현·실험 여부 스니펫 미확인)
+### 18. 기존 inverter sensor 인지 추가 sensor 인지
+- **기존 센서만** (초록·4.3절: '추가 센서 불필요, 이미 설치된 센서와 내부 신호 사용'). 실험 리그 측정보드는 LEM 전류 센서 사용.
 
-### [16] On-board Hardware Environment
-| 항목 | 값 |
-|---|---|
-| DSP | Not reported / Full text verification required |
-| MCU | Not reported / Full text verification required |
-| FPGA | Not reported / Full text verification required |
-| Sampling ADC | Not reported / Full text verification required |
-| Memory | Not reported / Full text verification required |
-| Sampling frequency | Not reported / Full text verification required |
-| Control frequency | Not reported / Full text verification required |
-| Execution time | Not reported / Full text verification required |
-| Inference time / model size | 해당 없음 |
+### 19. 직접 측정 신호 vs reconstructed signal
+- 직접 측정: U_DC, I_a, I_b, I_c.
+- Reconstructed: I_REC = S_aREC I_aREC + S_bREC I_bREC + S_cREC I_cREC (1); I_INV = Σ S_xINV I_xINV (2); I_DC(t) = S_aREC(t) I_a(t) + … (6, 트리거 시점); full-scale: I_cap = I_REC − I_INV (10). Fig. 1: 측정 vs 재구성 정류 유닛 DC 전류 일치(재구성 신호는 1 주기 지연).
 
-### [17] Real-time 가능성
-- **Real-time feasible** — 상전류×스위칭 함수 합산과 리플 대역 처리로 구성되어 제어기 주기 내 계산이 가능(해석); 시연 여부 미확인.
+### 20. Sampling frequency
+Not reported (원문에 없음)
 
-### [18] 실험 환경
-| Parameter | Value |
-|---|---|
-| DC-Link Voltage | Not reported / Full text verification required |
-| Output Voltage | Not reported / Full text verification required |
-| Power | Not reported / Full text verification required |
-| Load | Not reported / Full text verification required |
-| Motor | Not reported / Full text verification required |
-| Motor speed | Not reported / Full text verification required |
-| Torque | Not reported / Full text verification required |
-| Switching Frequency | Not reported / Full text verification required |
-| Fundamental Frequency | Not reported / Full text verification required |
-| Modulation | Not reported / Full text verification required |
-| Capacitor | Not reported / Full text verification required |
-| Sampling Frequency | Not reported / Full text verification required |
+### 21. Window length / sample length
+- 인버터 영벡터 구간(S_aINV = S_bINV = S_cINV → S_TRIG = 1)의 T_on(k)~T_off(k) 창에서 적분(식 (5), (7)). 창 길이 = 영벡터 지속시간(수치 NR).
 
-### [19] Operating Condition 다양성
-- Not reported / Full text verification required
+### 22. 전처리 (normalization / filtering / segmentation / phase alignment)
+- 인버터 스위칭과 동기화(트리거)하여 영벡터 구간만 사용 → 필터 없이 dU_DC/dt, dI_DC/dt 로 ESR 계산. 정규화·세그먼트·위상 정렬 별도 언급 없음. 응답시간 25 ms(시뮬).
 
-### [20] 최종 성능
-- 종합: Not reported / Full text verification required
-- C error: 해당 없음 / ESR error: Not reported / Full text verification required / Classification metrics: 해당 없음
+### 23. Feature extraction (FFT / PSD / harmonic / STFT / Wavelet)
+- 주파수 변환 없음. 시간영역 미분·적분: ESR(t) = ∫_{T_on}^{T_off} ((dU_DC/dt − I_DC/C_init) / (dI_DC/dt)) dt (7); C = (I_DC·ESR − U_DC)² / U_DC² × 100 % (8).
 
-### [21] Noise / Robustness
-- Not reported / Full text verification required
+### 24. 모델 또는 parameter estimation algorithm
+- 해석적 시간영역 추정(식 (1)–(10)). 임피던스 근사 Z ≈ ESR (12), u_C,ac = ESR·i_C (13). 추정기(RLS/Kalman) 없음. 다이오드 정류기용 스위칭 상태 테이블(Table 1: θ∈(−60°,60°) S_a=1; (60°,180°) S_b=1; (−180°,−60°) S_c=1).
 
-### [22] 장점
-- 토폴로지(2L AC/DC/AC)·센서 조건(추가 없음)·재구성 철학이 내 목표와 일치
-- 산업 연구소 출처 → 실용 관점
-- 공개 PDF 존재(로컬에서 확보 가능)
+### 25. AI: network architecture, input size, output, loss, optimizer
+- 해당 없음(AI 아님).
 
-### [23] 한계
-Authors' stated limitation:
-- Not reported / Full text verification required
+### 26. 저자가 직접 주장하는 contribution / novelty
+Authors' claimed contributions:
+1. 추가 센서 없이 **DC-link 전압 측정 + DC-link 전류 재구성** 만으로 온라인 ESR 추정(초록, 2.1절 '기존 방법 [3,4] 보다 적은 측정').
+2. 계산량이 작아 큰 연산 능력 불필요; 인버터 스위칭과 동기화해 SW·HW 를 더 단순화(2절, 특허 [10]).
+3. 제어 전략(FOC/scalar/DTC)에 독립.
+4. 회생 운전·AC 주입(Le et al. [12]) 없이 운전 중 ESR 결정(4.3절).
+5. 시뮬(±1 %, 25 ms) + 실험(최대 상대 오차 11 %)으로 검증.
 
-Additional limitation identified (분석자):
-- 저널 영향력 낮음 → 인용 시 보조 근거
-- 실험·정격·오차·노화 방식이 모두 미확인(본문 필수)
-- ESR only; 필름 커패시터에는 부적합(추론)
-- 재구성 오차(데드타임·샘플링 지연) 처리 여부 미확인
+### 27. True Online / Quasi-Online / Offline
+- **True Online**: 컨버터 운전 중(영벡터 구간은 PWM 에 자연 발생) 추정. 주입·시퀀스·정지 없음.
 
-### [24] 내 연구 목표와의 관련성
-- **Very High** — 2-Level AC/DC/AC + 기존 센서 + 재구성 + ESR + True Online — 내 목표와 조건이 가장 많이 겹친다(AI 요소만 없음).
+### 28. 실제 on-board 구현 여부
+- **Yes**: ABB AC800PEC 제어기(PowerPC + Virtex-II FPGA)에 Simulink 설계 제어를 배포(Fig. 8 'Design Control Deployed to PEC'); 측정은 MI 보드(LEM). 데이터 수집은 MATLAB/Java SOAP. 알고리즘이 PEC 에서 실행됐는지 PC 후처리인지는 본문이 명시하지 않음 — 'implemented in an easy manner' 로만 기술.
 
-### [25] 내 연구와의 비교
-| Item | Paper | My Target |
-|---|---|---|
-| Topology | 2L AC/DC/AC | 2-Level 3-Phase |
-| Capacitor | DC-link | DC-Link |
-| Signal | vdc + 재구성 DC-link 전류 (기존 센서) | Existing inverter signal preferred |
-| Aging Target | ESR | C / ESR |
-| Diagnosis | Regression(추정) | Classification or Regression |
-| Online | Yes (True Online) | Yes |
-| On-board | NR | Yes |
-| Extra Sensor | No | Preferably No |
-| AI | No | Candidate |
-| Real-time | 시연 NR | Required |
+### 29. DSP / MCU / FPGA 모델
+- ABB AC800PEC (PowerPC 프로세서 + Xilinx Virtex-II FPGA), 측정보드 LEM 센서, 게이트 드라이버(광섬유 PWM).
 
-### [26] 재현 가능성
-- **Moderate** — 재구성 자체는 쉽지만 ESR 추출식·대역·보정이 본문에만 있다. PDF 가 공개되어 있어 로컬에서 바로 확인 가능.
-- MATLAB/Simulink + 실험 인버터 기준 준비물: 저장 신호: ia, ib, ic, Sa/Sb/Sc, vdc, 검증용 idc·iC. 변화 파라미터: ESR(Radd 0 ~ +100 %), C 고정/변경 교차, 부하 3단계. 데이터셋: 조합별 정상상태 파형 → 재구성 전류 fsw 성분 vs vdc 리플.
+### 30. Control frequency / inference time / execution time / memory
+- 제어 주파수 NR / 실행 시간 NR / 메모리 NR. 시뮬 응답시간 25 ms.
 
-### 선정 점수 (10 기준 × 10점)
-| c1 10 | c2 10 | c3 4 | c4 10 | c5 10 | c6 8 | c7 3 | c8 8 | c9 2 | c10 7 | **Total 72** |
-|---|---|---|---|---|---|---|---|---|---|---|
+### 31. Classification accuracy 또는 regression error
+- 시뮬: ESR 스텝 추적 오차 약 ±1 %, 응답 25 ms. 실험: 기대값 대비 **최대 상대 오차 11 %**(Table 2: 0.18 vs 0.17, 0.185 vs 0.18, 0.23 vs 0.26, 0.52 vs 0.57).
 
-### 읽기 포인트
-- 왜 읽어야 하는가: 제목부터 '2-Level AC/DC/AC' 이며 추가 센서 없는 재구성 기반 ESR 추정 — 내 토폴로지·신호 조건의 직접 선례.
-- 집중할 Figure/Table/Equation: DC-link 전류 재구성 식(스위칭 함수 정의), ESR 추출 대역·수식, 실험/시뮬 조건 표, 오차 그림
-- 동반·후속 논문: 관련 특허(개념 비교용): US 12461138 'Circuitry and methods for monitoring power conversion circuitry' — AC 측 전류+스위칭 상태로 커패시터 전류 재구성.
+### 32. Load / speed / temperature / modulation 변화 robustness
+- 부하·속도·온도·변조 변화 실험 없음(단일 조건). 저자는 과전압·과전류·동적 충방전 등 '원치 않는 현상' 이 ESR 결정에 영향을 준다고 기술.
+
+### 33. 저자가 인정한 limitation
+- 노화 과정이 비선형이어서 ESR·잔여수명 정확 결정이 어려움(2절, 4.2절).
+- 정확도 평가에 쓴 점이 적음(4.2절).
+- 향후: DC-link 전압·전류의 외란으로부터 알고리즘 분리(decoupling) 또는 외란을 추가 지표로 활용(결론).
+
+### 34. 내가 보는 추가 limitation
+- 정격(전압·전력·fsw·C)·샘플링·실행시간이 전혀 없어 재현 조건 불명.
+- C_init 을 알고 있어야 ESR 계산 가능(식 (7)) → C 가 함께 변하면 ESR 오차로 전파(C 변화 실험 없음).
+- 영벡터 구간 적분은 변조지수가 높을수록 창이 짧아짐(추론) → 고변조·고속 운전에서 정확도 저하 가능.
+- 실험 오차 11 % 는 EoL 기준(ESR ×2) 대비 작지만, 초기 열화(+20–30 %) 검출에는 부족할 수 있음.
+- 저널 영향력 낮음, 그림 수치 판독성 낮음.
+
+### 35. MATLAB/Simulink 재현에 필요한 신호와 parameter
+- 모델: 3상 전원 + (능동 또는 다이오드) 정류기 + DC choke + C(ESR) + 2L 인버터 + IM/RL 부하. 로그: U_DC, I_a,I_b,I_c(정류 측), 필요 시 인버터 측 상전류, S_xREC, S_xINV, 검증용 I_DC·I_cap.
+- 구현: 영벡터 검출(S_aINV=S_bINV=S_cINV) → 트리거 창 → 식 (6) 재구성 → 식 (7) ESR, 식 (8) C. 스윕: R_add 0/0.02/0.03/0.11/0.42 Ω(원문) + 추가로 C 변화·부하 30/60/100 %.
+- 다이오드 정류기면 Table 1 각도 기반 S_x 생성(계통 각도 필요).
+
+### 36. 실험 장치 구현에 필요한 sensor 와 hardware
+- 센서: DC-link 전압 센서 1개, 정류 측 3상 전류 센서(LEM; 보호 릴레이 공용 가능), (full-scale) 인버터 측 3상 전류 센서.
+- 제어기: 스위칭 신호와 측정을 동기 샘플링할 수 있는 DSP/FPGA(ABB 는 AC800PEC). 직렬 저항 삽입용 저항 세트(0.02–0.42 Ω, 전류 정격 고려).
+
+### Aging Sample 표 (원문 값만)
+| Aging Sample | C | C Change | ESR | ESR Change | Operating Condition | Label |
+|---|---:|---:|---:|---:|---|---|
+| ESR₁ | Not reported (원문에 없음) (C 고정) | 0 % | 0.15 Ω (추정 기준값; Radd 0) | 기준 | 실험 리그, 단일 운전점 | ESR 추정 (기준) |
+| ESR₂ | 〃 | 0 % | 기대 0.17 Ω / 추정 ca. 0.18 Ω (Radd 0.02) | +13 % (기대) | 〃 | 오차 ≈ +6 % |
+| ESR₃ | 〃 | 0 % | 기대 0.18 Ω / 추정 ca. 0.185 Ω (Radd 0.03) | +20 % | 〃 | 오차 ≈ +3 % |
+| ESR₄ | 〃 | 0 % | 기대 0.26 Ω / 추정 ca. 0.23 Ω (Radd 0.11) | +73 % | 〃 | 오차 ≈ −11 % |
+| ESR₅ | 〃 | 0 % | 기대 0.57 Ω / 추정 ca. 0.52 Ω (Radd 0.42) | +280 % | 〃 | 오차 ≈ −9 % |
+원문 Table 2 값. 'ESR Change' 와 오차 % 는 기대값(0.15 + Radd) 기준 분석자 계산. C 는 변경하지 않았고 정격도 미기재.
+
+### 원문 수식 요약 (재현용)
+- (1) I_REC = S_aREC I_aREC + S_bREC I_bREC + S_cREC I_cREC ; (2) I_INV = Σ S_xINV I_xINV ; (4) 트리거: S_aINV = S_bINV = S_cINV → S_TRIG = 1
+- (6) I_DC(t) = S_aREC(t) I_a(t) + S_bREC(t) I_b(t) + S_cREC(t) I_c(t)
+- (7) ESR(t) = ∫_{T_on}^{T_off} [ (dU_DC/dt − I_DC(t)/C_init) / (dI_DC(t)/dt) ] dt
+- (8) C = (I_DC ESR − U_DC)² / U_DC² × 100 % ; (9) C < k_p C_init → 알람 ; (10) I_cap = I_REC − I_INV
+- (11) 1/ESR(t) = 1/ESR(0) · (1 − k t e^{−4700/(T−273)}) (시뮬용 ESR 성장 모델)
 
 ---
-
-(본 파일은 `2level_inverter_dc_link_capacitor_onboard_top10.md` 7절과 동일 내용. 본문 확보 후 `Not reported / Full text verification required` 항목을 채워 갱신한다.)
+(이 파일은 `2level_top5_fulltext_comparison.md` 와 같은 원문 분석에서 생성됨. 이전 Abstract-level 워크시트의 선정 점수·Tier 는 `2level_inverter_dc_link_capacitor_onboard_top10.md` 5절 참조.)
