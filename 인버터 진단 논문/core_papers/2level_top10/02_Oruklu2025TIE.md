@@ -162,6 +162,7 @@ Authors' claimed contributions (1절):
 | C12 | 612.15 µF | −1.4 % | Not reported (원문에 없음) | Not reported (원문에 없음) | 〃 | 〃 |
 | C13 (new) | 620.85 µF | 0 % (기준) | Not reported (원문에 없음) | Not reported (원문에 없음) | 〃 | 〃 |
 | 시뮬 학습 | 400–500 µF, 10 µF 간격 11 수준 | −20 ~ 0 % (vs 500) | Not reported (원문에 없음) | Not reported (원문에 없음) | 15 부하(R 61.5–217.5 Ω × {0, 6.25, 12.5 mH}) | C 회귀 타깃 |
+
 C 값은 3.A절 원문(LCR 120 Hz). 'C Change' 는 620.85 µF 기준 분석자 계산. 테스트 175 는 7 C 수준 × 5 저항 부하 × 5 반복(어느 7 수준인지는 Fig. 10 축: 512.5–620.85 µF 중 7개).
 
 ### 원문 결과표 요약
